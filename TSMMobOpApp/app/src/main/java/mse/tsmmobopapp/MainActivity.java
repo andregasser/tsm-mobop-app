@@ -1,4 +1,4 @@
-package mse.tsmmobop;
+package mse.tsmmobopapp;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;

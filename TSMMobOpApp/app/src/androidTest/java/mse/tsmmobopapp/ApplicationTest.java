@@ -1,4 +1,4 @@
-package mse.tsmmobop;
+package mse.tsmmobopapp;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
