@@ -30,3 +30,9 @@ For data exchange we leverage the power and simplicity of JSON/HTTP.
 Security is not a major concern during this project. Nevertheless, we secure our API using a simple **shared secret**. Certainly, there are much better ways to protect web services, but we had to cope with some time restrictions.
 
 At this time, the app also does not require any kind of registration or authentication.
+
+
+###Link 	Collection
+
+testing fundamentals: <http://developer.android.com/tools/testing/testing_android.html>
+google heat maps api: <https://developers.google.com/maps/documentation/android/utility/heatmap>
