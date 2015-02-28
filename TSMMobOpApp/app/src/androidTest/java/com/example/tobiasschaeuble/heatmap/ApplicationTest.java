@@ -1,4 +1,4 @@
-package mse.tsmmobopapp;
+package com.example.tobiasschaeuble.heatmap;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
