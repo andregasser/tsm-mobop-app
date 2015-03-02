@@ -1,6 +1,5 @@
 package mse.hqevaluator;
 
-
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
@@ -8,17 +7,27 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by aga on 3/1/15.
+ * Returns an Image object that can then be painted on the screen.
+ * The url argument must specify an absolute {@link URL}. The name
+ * argument is a specifier that is relative to the url argument.
+ * <p>
+ * This method always returns immediately, whether or not the
+ * image exists. When this applet attempts to draw the image on
+ * the screen, the data will be loaded. The graphics primitives
+ * that draw the image will incrementally paint on the screen.
+ *
+ * @param  url  an absolute URL giving the base location of the image
+ * @param  name the location of the image, relative to the url argument
+ * @return      the image at the specified URL
+ * @see         Image
  */
 public class WebServiceProxy {
 
