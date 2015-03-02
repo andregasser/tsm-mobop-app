@@ -1,0 +1,19 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="fill_horizontal"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/response"
+        android:textStyle="bold"
+        android:textColor="#ff00ff"
+        android:background="#00ff00"
+        android:textColorHighlight="#000000"
+        android:textIsSelectable="false"
+        android:scrollbars="vertical" />
+
+</LinearLayout>
