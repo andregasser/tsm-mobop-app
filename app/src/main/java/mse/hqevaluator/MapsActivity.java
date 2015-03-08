@@ -1,32 +1,62 @@
 package mse.hqevaluator;
 
-import android.support.v4.app.FragmentActivity;
+import android.content.Context;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.plus.Plus;
 
 import java.util.Iterator;
 import java.util.List;
 
-public class MapsActivity extends ActionBarActivity implements AsyncResponse {
+public class MapsActivity extends ActionBarActivity
+    implements AsyncResponse, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+
+    private GoogleApiClient googleApiClient;
+
+    private Location location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
+        buildGoogleApiClient();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        googleApiClient.connect();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .build();
+        googleApiClient.connect();
+
     }
 
     /**
@@ -79,5 +109,33 @@ public class MapsActivity extends ActionBarActivity implements AsyncResponse {
                     .position(new LatLng(plant.Latitude, plant.Longitude))
                     .title(plant.Name + "\nLatitude: " + plant.Latitude + "\nLongitude: " + plant.Longitude));
         }
+    }
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+
+        if (location != null) {
+            // Display toast for debugging purposes
+            Helpers.showToast("Lat: " + location.getLatitude() + "\nLng: " + location.getLongitude(), getApplicationContext());
+
+            LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
+            float zoom = 8.0f;    // valid values between 2.0 and 21.0
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, zoom));
+        }
+        else {
+            // Display toast for debugging purposes
+            Helpers.showToast("Location was empty", getApplicationContext());
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Helpers.showToast("Disconnected", getApplicationContext());
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Helpers.showToast("Connection failed", getApplicationContext());
     }
 }
