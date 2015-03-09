@@ -114,7 +114,22 @@ public class MapsActivity extends ActionBarActivity
     @Override
     public void onConnected(Bundle connectionHint) {
         location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+        setlocationtocurent();
 
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Helpers.showToast("Disconnected", getApplicationContext());
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Helpers.showToast("Connection failed", getApplicationContext());
+    }
+
+    private void setlocationtocurent() {
         if (location != null) {
             // Display toast for debugging purposes
             Helpers.showToast("Lat: " + location.getLatitude() + "\nLng: " + location.getLongitude(), getApplicationContext());
@@ -129,13 +144,4 @@ public class MapsActivity extends ActionBarActivity
         }
     }
 
-    @Override
-    public void onConnectionSuspended(int i) {
-        Helpers.showToast("Disconnected", getApplicationContext());
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Helpers.showToast("Connection failed", getApplicationContext());
-    }
 }
