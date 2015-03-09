@@ -9,23 +9,20 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="@string/activity_main_button_show_map"
+        android:drawableLeft="@drawable/map"
         android:onClick="openMapsActivity" />
 
     <Button
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="@string/activity_main_button_settings"
+        android:drawableLeft="@drawable/settings"
         android:onClick="openSettingsActivity" />
 
     <Button
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:text="@string/activity_main_button_web_service_tester"
-        android:onClick="openWebServiceTesterActivity" />
-
-    <Button
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="@string/activity_main_button_about" />
+        android:text="@string/activity_main_button_about"
+        android:drawableLeft="@drawable/about" />
 
 </LinearLayout>

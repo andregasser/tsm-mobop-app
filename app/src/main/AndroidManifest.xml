@@ -50,14 +50,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="mse.hqevaluator.MainActivity" />
         </activity>
-        <activity
-            android:name=".WebServiceTesterActivity"
-            android:label="@string/title_activity_web_service_tester"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="mse.hqevaluator.MainActivity" />
-        </activity>
     </application>
 
 </manifest>
