@@ -144,7 +144,7 @@ public class MapsActivity extends ActionBarActivity
     @Override
     public void onConnected(Bundle connectionHint) {
         location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        setlocationtocurent();
+        //setlocationtocurent();
 
        if (location != null) {
             // Display toast for debugging purposes
