@@ -50,10 +50,4 @@ public class MainActivity extends ActionBarActivity {
         Intent intent = new Intent(this, MapsActivity.class);
         startActivity(intent);
     }
-
-    public void openWebServiceTesterActivity(View view)
-    {
-        Intent intent = new Intent(this, WebServiceTesterActivity.class);
-        startActivity(intent);
-    }
 }
