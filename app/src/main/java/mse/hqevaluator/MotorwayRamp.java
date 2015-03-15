@@ -1,12 +1,12 @@
 package mse.hqevaluator;
 
 /**
- * Represents a single nuclear power plant.
+ * Represents a single motorway ramp.
  */
-public class NuclearPowerPlant {
+public class MotorwayRamp {
     public int Id;
     public String Name;
-    public String Description;
+    public String Motorway;
     public double Longitude;
     public double Latitude;
 }
