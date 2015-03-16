@@ -1,68 +1,34 @@
 package mse.hqevaluator;
 
+import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.TileOverlayOptions;
-import com.google.maps.android.heatmaps.HeatmapTileProvider;
-import com.google.android.gms.maps.model.TileOverlay;
-import com.google.maps.android.heatmaps.WeightedLatLng;
-import com.google.maps.android.heatmaps.Gradient;
-import android.graphics.Color;
-import java.util.Collection;
 import com.google.android.gms.plus.Plus;
-
-import java.util.ArrayList;
-
 
 import java.util.Iterator;
 import java.util.List;
 
-import mse.hqevaluator.asynctasks.GetAllMotorwayRampsTask;
-import mse.hqevaluator.asynctasks.OnAllMotorwayRampsReceivedListener;
-import mse.hqevaluator.asynctasks.OnAllNuclearPowerPlantsReceivedListener;
-import mse.hqevaluator.asynctasks.AsyncTaskResult;
-import mse.hqevaluator.asynctasks.AsyncTaskResultStatus;
-import mse.hqevaluator.asynctasks.GetAllNuclearPowerPlantsTask;
-
 public class MapsActivity extends ActionBarActivity
-    implements OnAllNuclearPowerPlantsReceivedListener, OnAllMotorwayRampsReceivedListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+    implements AsyncResponse, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
     private GoogleApiClient googleApiClient;
 
     private Location location;
-
-    private HeatmapTileProvider mProvider;
-
-    private TileOverlay mOverlay;
-
-    private final LatLng ZURICH = new LatLng(47.377911, 8.524798);
-
-    private final WeightedLatLng ZU = new WeightedLatLng(ZURICH, 1);
-
-    private static final int[] colors = {
-            Color.rgb(102, 225, 0),
-            Color.rgb(255, 0, 0)
-    };
-
-    private static final float[] startPoints = {
-            0.2f, 2f
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,8 +94,21 @@ public class MapsActivity extends ActionBarActivity
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        new GetAllNuclearPowerPlantsTask(this).execute();
-        new GetAllMotorwayRampsTask(this).execute();
+         new GetAllNuclearPowerPlantsTask(this).execute();
+    }
+
+    @Override
+    public void processFinish(Object output) {
+        List<NuclearPowerPlant> list = (List<NuclearPowerPlant>)output;
+        Iterator<NuclearPowerPlant> iterator = list.iterator();
+
+        while(iterator.hasNext()){
+            NuclearPowerPlant plant = iterator.next();
+            mMap.addMarker(
+                new MarkerOptions()
+                    .position(new LatLng(plant.Latitude, plant.Longitude))
+                    .title(plant.Name + "\nLatitude: " + plant.Latitude + "\nLongitude: " + plant.Longitude));
+        }
     }
 
     @Override
@@ -149,6 +128,7 @@ public class MapsActivity extends ActionBarActivity
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Helpers.showToast("Connection failed", getApplicationContext());
     }
+
     private void setlocationtocurent() {
         if (location != null) {
             // Display toast for debugging purposes
@@ -163,73 +143,5 @@ public class MapsActivity extends ActionBarActivity
             Helpers.showToast("Location was empty", getApplicationContext());
         }
     }
-    private void addHeatMap() {
-        ArrayList<WeightedLatLng> list = new ArrayList<WeightedLatLng>();
-        list.add(ZU);
-        LatLng nlocationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-        WeightedLatLng locationLatLng = new WeightedLatLng(nlocationLatLng,1);
 
-        list.add(locationLatLng);
-
-
-        Gradient gradient = new Gradient(colors, startPoints);
-
-        // Create a heat map tile provider, passing it the latlngs of the police stations.
-        mProvider = new HeatmapTileProvider.Builder()
-                .weightedData(list)
-                .gradient(gradient)
-                .build();
-        // Add a tile overlay to the map, using the heat map tile provider.
-        mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
-
-        mProvider.setOpacity(1);
-
-    }
-
-    @Override
-    public void onAllNuclearPowerPlantsReceived(AsyncTaskResult<List<NuclearPowerPlant>> result) {
-        List<NuclearPowerPlant> list = result.getResult();
-        Exception e = result.getException();
-        AsyncTaskResultStatus status = result.getStatus();
-
-        if (status.equals(AsyncTaskResultStatus.SUCCESS)) {
-            // Everything was fine.
-            Iterator<NuclearPowerPlant> iterator = list.iterator();
-
-            while(iterator.hasNext()){
-                NuclearPowerPlant plant = iterator.next();
-                mMap.addMarker(
-                    new MarkerOptions()
-                        .position(new LatLng(plant.Latitude, plant.Longitude))
-                        .title(plant.Name + "\nLatitude: " + plant.Latitude + "\nLongitude: " + plant.Longitude));
-            }
-        } else {
-            // There was an error. We should display an error to the user.
-            // TODO: Display error message
-        }
-    }
-
-    @Override
-    public void onAllMotorwayRampsReceived(AsyncTaskResult<List<MotorwayRamp>> result) {
-        List<MotorwayRamp> list = result.getResult();
-        Exception e = result.getException();
-        AsyncTaskResultStatus status = result.getStatus();
-
-        if (status.equals(AsyncTaskResultStatus.SUCCESS)) {
-            // Everything was fine.
-            Iterator<MotorwayRamp> iterator = list.iterator();
-
-            while(iterator.hasNext()){
-                MotorwayRamp ramp = iterator.next();
-                mMap.addMarker(
-                        new MarkerOptions()
-                                .position(new LatLng(ramp.Latitude, ramp.Longitude))
-                                .title(ramp.Name + "\nLatitude: " + ramp.Latitude + "\nLongitude: " + ramp.Longitude)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-            }
-        } else {
-            // There was an error. We should display an error to the user.
-            // TODO: Display error message
-        }
-    }
 }

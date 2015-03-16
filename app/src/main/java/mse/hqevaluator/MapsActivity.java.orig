@@ -3,8 +3,6 @@ package mse.hqevaluator;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -149,6 +147,8 @@ public class MapsActivity extends ActionBarActivity
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Helpers.showToast("Connection failed", getApplicationContext());
     }
+
+    private void addHeatMap() {
     private void setlocationtocurent() {
         if (location != null) {
             // Display toast for debugging purposes
@@ -162,8 +162,6 @@ public class MapsActivity extends ActionBarActivity
             // Display toast for debugging purposes
             Helpers.showToast("Location was empty", getApplicationContext());
         }
-    }
-    private void addHeatMap() {
         ArrayList<WeightedLatLng> list = new ArrayList<WeightedLatLng>();
         list.add(ZU);
         LatLng nlocationLatLng = new LatLng(location.getLatitude(), location.getLongitude());

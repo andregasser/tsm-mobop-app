@@ -1,10 +1,18 @@
 package mse.hqevaluator;
 
+<<<<<<< HEAD
+import android.content.Intent;
+import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.widget.Toast;
+=======
+import android.location.Location;
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+>>>>>>> 13f2942ca6980fdcbeb5ef3b3089109549747525
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -15,6 +23,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+<<<<<<< HEAD
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.google.android.gms.maps.model.TileOverlay;
@@ -23,6 +32,8 @@ import com.google.maps.android.heatmaps.Gradient;
 import android.graphics.Color;
 import java.util.Collection;
 import com.google.android.gms.plus.Plus;
+=======
+>>>>>>> 13f2942ca6980fdcbeb5ef3b3089109549747525
 
 import java.util.ArrayList;
 
@@ -128,29 +139,35 @@ public class MapsActivity extends ActionBarActivity
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
+<<<<<<< HEAD
+         new GetAllNuclearPowerPlantsTask(this).execute();
+    }
+
+    @Override
+    public void processFinish(Object output) {
+        List<NuclearPowerPlant> list = (List<NuclearPowerPlant>)output;
+        Iterator<NuclearPowerPlant> iterator = list.iterator();
+
+        while(iterator.hasNext()){
+            NuclearPowerPlant plant = iterator.next();
+            mMap.addMarker(
+                new MarkerOptions()
+                    .position(new LatLng(plant.Latitude, plant.Longitude))
+                    .title(plant.Name + "\nLatitude: " + plant.Latitude + "\nLongitude: " + plant.Longitude));
+        }
+        addHeatMap();
+=======
         new GetAllNuclearPowerPlantsTask(this).execute();
         new GetAllMotorwayRampsTask(this).execute();
+>>>>>>> 13f2942ca6980fdcbeb5ef3b3089109549747525
     }
 
     @Override
     public void onConnected(Bundle connectionHint) {
         location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        setlocationtocurent();
+        //setlocationtocurent();
 
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        Helpers.showToast("Disconnected", getApplicationContext());
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Helpers.showToast("Connection failed", getApplicationContext());
-    }
-    private void setlocationtocurent() {
-        if (location != null) {
+       if (location != null) {
             // Display toast for debugging purposes
             Helpers.showToast("Lat: " + location.getLatitude() + "\nLng: " + location.getLongitude(), getApplicationContext());
 
@@ -163,7 +180,19 @@ public class MapsActivity extends ActionBarActivity
             Helpers.showToast("Location was empty", getApplicationContext());
         }
     }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Helpers.showToast("Disconnected", getApplicationContext());
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Helpers.showToast("Connection failed", getApplicationContext());
+    }
+
     private void addHeatMap() {
+
         ArrayList<WeightedLatLng> list = new ArrayList<WeightedLatLng>();
         list.add(ZU);
         LatLng nlocationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -174,6 +203,7 @@ public class MapsActivity extends ActionBarActivity
 
         Gradient gradient = new Gradient(colors, startPoints);
 
+<<<<<<< HEAD
         // Create a heat map tile provider, passing it the latlngs of the police stations.
         mProvider = new HeatmapTileProvider.Builder()
                 .weightedData(list)
@@ -184,8 +214,7 @@ public class MapsActivity extends ActionBarActivity
 
         mProvider.setOpacity(1);
 
-    }
-
+=======
     @Override
     public void onAllNuclearPowerPlantsReceived(AsyncTaskResult<List<NuclearPowerPlant>> result) {
         List<NuclearPowerPlant> list = result.getResult();
@@ -231,5 +260,6 @@ public class MapsActivity extends ActionBarActivity
             // There was an error. We should display an error to the user.
             // TODO: Display error message
         }
+>>>>>>> 13f2942ca6980fdcbeb5ef3b3089109549747525
     }
 }

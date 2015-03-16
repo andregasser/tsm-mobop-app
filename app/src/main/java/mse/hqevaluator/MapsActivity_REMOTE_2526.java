@@ -3,8 +3,6 @@ package mse.hqevaluator;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -15,17 +13,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.TileOverlayOptions;
-import com.google.maps.android.heatmaps.HeatmapTileProvider;
-import com.google.android.gms.maps.model.TileOverlay;
-import com.google.maps.android.heatmaps.WeightedLatLng;
-import com.google.maps.android.heatmaps.Gradient;
-import android.graphics.Color;
-import java.util.Collection;
-import com.google.android.gms.plus.Plus;
-
-import java.util.ArrayList;
-
 
 import java.util.Iterator;
 import java.util.List;
@@ -46,23 +33,6 @@ public class MapsActivity extends ActionBarActivity
     private GoogleApiClient googleApiClient;
 
     private Location location;
-
-    private HeatmapTileProvider mProvider;
-
-    private TileOverlay mOverlay;
-
-    private final LatLng ZURICH = new LatLng(47.377911, 8.524798);
-
-    private final WeightedLatLng ZU = new WeightedLatLng(ZURICH, 1);
-
-    private static final int[] colors = {
-            Color.rgb(102, 225, 0),
-            Color.rgb(255, 0, 0)
-    };
-
-    private static final float[] startPoints = {
-            0.2f, 2f
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +119,7 @@ public class MapsActivity extends ActionBarActivity
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Helpers.showToast("Connection failed", getApplicationContext());
     }
+
     private void setlocationtocurent() {
         if (location != null) {
             // Display toast for debugging purposes
@@ -162,28 +133,6 @@ public class MapsActivity extends ActionBarActivity
             // Display toast for debugging purposes
             Helpers.showToast("Location was empty", getApplicationContext());
         }
-    }
-    private void addHeatMap() {
-        ArrayList<WeightedLatLng> list = new ArrayList<WeightedLatLng>();
-        list.add(ZU);
-        LatLng nlocationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-        WeightedLatLng locationLatLng = new WeightedLatLng(nlocationLatLng,1);
-
-        list.add(locationLatLng);
-
-
-        Gradient gradient = new Gradient(colors, startPoints);
-
-        // Create a heat map tile provider, passing it the latlngs of the police stations.
-        mProvider = new HeatmapTileProvider.Builder()
-                .weightedData(list)
-                .gradient(gradient)
-                .build();
-        // Add a tile overlay to the map, using the heat map tile provider.
-        mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
-
-        mProvider.setOpacity(1);
-
     }
 
     @Override
