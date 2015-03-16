@@ -136,6 +136,7 @@ public class MapsActivity extends ActionBarActivity
     public void onConnected(Bundle connectionHint) {
         location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
         setlocationtocurent();
+        addHeatMap();
 
 
     }
