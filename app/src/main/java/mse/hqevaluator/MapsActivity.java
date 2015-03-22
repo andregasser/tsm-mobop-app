@@ -23,6 +23,8 @@ import mse.hqevaluator.asynctasks.OnAllNuclearPowerPlantsReceivedListener;
 import mse.hqevaluator.asynctasks.AsyncTaskResult;
 import mse.hqevaluator.asynctasks.AsyncTaskResultStatus;
 import mse.hqevaluator.asynctasks.GetAllNuclearPowerPlantsTask;
+import mse.hqevaluator.entities.MotorwayRamp;
+import mse.hqevaluator.entities.NuclearPowerPlant;
 
 public class MapsActivity extends ActionBarActivity
     implements OnAllNuclearPowerPlantsReceivedListener, OnAllMotorwayRampsReceivedListener,

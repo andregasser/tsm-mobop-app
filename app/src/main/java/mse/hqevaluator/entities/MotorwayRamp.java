@@ -1,4 +1,4 @@
-package mse.hqevaluator;
+package mse.hqevaluator.entities;
 
 /**
  * Represents a single motorway ramp.

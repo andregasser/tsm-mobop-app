@@ -2,11 +2,11 @@ package mse.hqevaluator.asynctasks;
 
 import android.os.AsyncTask;
 
-import java.io.IOException;
 import java.util.List;
 
-import mse.hqevaluator.NuclearPowerPlant;
-import mse.hqevaluator.WebServiceProxy;
+import mse.hqevaluator.entities.NuclearPowerPlant;
+import mse.hqevaluator.webserviceproxy.WebServiceException;
+import mse.hqevaluator.webserviceproxy.WebServiceProxy;
 
 /**
  * This class fetches all nuclear power plants in the background. As soon as the data
@@ -42,7 +42,7 @@ public class GetAllNuclearPowerPlantsTask extends AsyncTask<Void, Void, AsyncTas
 
         try {
             list = wsProxy.getAllNuclearPowerPlants();
-        } catch (IOException e) {
+        } catch (WebServiceException e) {
             return new AsyncTaskResult<>(list, e);
         }
 
