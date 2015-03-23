@@ -1,9 +1,13 @@
 package mse.hqevaluator;
 
+import android.app.Fragment;
+import android.hardware.display.DisplayManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Display;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -13,20 +17,29 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.maps.android.MarkerManager;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.maps.android.heatmaps.WeightedLatLng;
 import com.google.maps.android.heatmaps.Gradient;
 import android.graphics.Color;
+import java.lang.Math;
 import java.util.Collection;
 import com.google.android.gms.plus.Plus;
+import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
+
+
 
 import java.util.ArrayList;
 
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -37,32 +50,17 @@ import mse.hqevaluator.asynctasks.AsyncTaskResult;
 import mse.hqevaluator.asynctasks.AsyncTaskResultStatus;
 import mse.hqevaluator.asynctasks.GetAllNuclearPowerPlantsTask;
 
+
+
 public class MapsActivity extends ActionBarActivity
     implements OnAllNuclearPowerPlantsReceivedListener, OnAllMotorwayRampsReceivedListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnCameraChangeListener{
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
     private GoogleApiClient googleApiClient;
 
     private Location location;
-
-    private HeatmapTileProvider mProvider;
-
-    private TileOverlay mOverlay;
-
-    private final LatLng ZURICH = new LatLng(47.377911, 8.524798);
-
-    private final WeightedLatLng ZU = new WeightedLatLng(ZURICH, 1);
-
-    private static final int[] colors = {
-            Color.rgb(102, 225, 0),
-            Color.rgb(255, 0, 0)
-    };
-
-    private static final float[] startPoints = {
-            0.2f, 2f
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +116,7 @@ public class MapsActivity extends ActionBarActivity
             if (mMap != null) {
                 setUpMap();
             }
+            mMap.setOnCameraChangeListener(this);
         }
     }
 
@@ -150,13 +149,14 @@ public class MapsActivity extends ActionBarActivity
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Helpers.showToast("Connection failed", getApplicationContext());
     }
+
     private void setlocationtocurent() {
         if (location != null) {
             // Display toast for debugging purposes
             Helpers.showToast("Lat: " + location.getLatitude() + "\nLng: " + location.getLongitude(), getApplicationContext());
 
             LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
-            float zoom = 8.0f;    // valid values between 2.0 and 21.0
+            float zoom = 10.0f;    // valid values between 2.0 and 21.0
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, zoom));
         }
         else {
@@ -164,11 +164,30 @@ public class MapsActivity extends ActionBarActivity
             Helpers.showToast("Location was empty", getApplicationContext());
         }
     }
+
+    private HeatmapTileProvider mProvider;
+
+    private TileOverlay mOverlay;
+
+    private final LatLng ZURICH = new LatLng(47.377911, 8.524798);
+
+    private final WeightedLatLng ZU = new WeightedLatLng(ZURICH, 1);
+
+    private static final int[] colors = {
+            Color.rgb(102, 225, 0),
+            Color.rgb(255, 0, 0)
+    };
+
+    private static final float[] startPoints = {
+            0.1f, 2f
+    };
+
     private void addHeatMap() {
         ArrayList<WeightedLatLng> list = new ArrayList<WeightedLatLng>();
         list.add(ZU);
         LatLng nlocationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         WeightedLatLng locationLatLng = new WeightedLatLng(nlocationLatLng,1);
+
 
         list.add(locationLatLng);
 
@@ -183,9 +202,97 @@ public class MapsActivity extends ActionBarActivity
         // Add a tile overlay to the map, using the heat map tile provider.
         mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
 
-        mProvider.setOpacity(1);
+        mProvider.setOpacity(0.7);
+        mProvider.setRadius(100);
+
+        //Circle circle = mMap.addCircle(new CircleOptions()
+        //        .center(nlocationLatLng)
+        //        .radius(10000)
+        //        .strokeColor(Color.RED)
+        //        .fillColor(Color.BLUE));
+
+
 
     }
+
+    private float previousZoomLevel = -1.0f;
+    private boolean isZooming = false;
+
+    @Override
+    public void onCameraChange(CameraPosition cameraPosition) {
+
+        //Log.d("ZOOOO","Zoom"+(int) (cameraPosition.zoom*100));
+        //Log.d("Mapgröße","viereckkoordinaten"+mMap.getProjection().getVisibleRegion());
+
+       // Log.d("ZOOOO", "Zoom" + mMap.getCameraPosition().zoom);
+
+
+        //Log.d("Mapgröße","getWidth"+layout.getWidth());
+
+
+        //Collection data = new LatLng(farleft);
+
+//        ArrayList<LatLng> data = new ArrayList<LatLng>();
+//        data.add(farleft);
+//        data.add(nearleft);
+//        data.add(farright);
+//        data.add(nearright);
+
+//        mProvider.setData(data);
+
+        float results[] = new float[1];
+        Location.distanceBetween(
+                mMap.getProjection().getVisibleRegion().nearLeft.latitude,
+                mMap.getProjection().getVisibleRegion().nearLeft.longitude,
+                mMap.getProjection().getVisibleRegion().farRight.latitude,
+                mMap.getProjection().getVisibleRegion().farRight.longitude,
+                results); //visible distance on display
+
+        //Log.d("Distance","ist"+distance);
+        Log.d("Distance0","ist"+results[0]);
+
+        LinearLayout layout = (LinearLayout) this.findViewById(R.id.maps_activity);
+        double meterPerPixel = results[0] / Math.hypot(layout.getWidth(),layout.getHeight());
+
+        //float pixelPerMeter = layout.getWidth() / results[0];
+
+        Log.d("meterPerPixel","ist"+meterPerPixel);
+
+
+        int radius = 1000;
+        int actualRadius = (int)(radius / meterPerPixel);
+
+        Log.d("Radius","ist"+actualRadius);
+
+        mProvider.setRadius(actualRadius);
+
+        //mProvider.setRadius();
+
+
+    }
+
+//    public GoogleMap.OnCameraChangeListener getCameraChangeListener()
+//    {
+//        return new GoogleMap.OnCameraChangeListener()
+//        {
+//            @Override
+//            public void onCameraChange(CameraPosition position)
+//            {
+//                Log.d("Zoom", "Zoom: " + position.zoom);
+//
+//                if(previousZoomLevel != position.zoom)
+//                {
+//                    isZooming = true;
+//                }
+//
+//                previousZoomLevel = position.zoom;
+//            }
+//        };
+//    }
+
+//    google.maps.event.addListener(map, 'zoom_changed', function () {
+//        heatmap.setOptions({radius:getNewRadius()});
+//    });
 
     @Override
     public void onAllNuclearPowerPlantsReceived(AsyncTaskResult<List<NuclearPowerPlant>> result) {
@@ -233,4 +340,5 @@ public class MapsActivity extends ActionBarActivity
             // TODO: Display error message
         }
     }
+
 }
