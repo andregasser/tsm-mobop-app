@@ -1,22 +1,19 @@
-package mse.hqevaluator;
+package mse.hqevaluator.webserviceproxy;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import mse.hqevaluator.Helpers;
+import mse.hqevaluator.entities.MotorwayRamp;
+import mse.hqevaluator.entities.NuclearPowerPlant;
 
 /**
  * Class for JSON/REST web service connectivity.
@@ -39,7 +36,7 @@ public class WebServiceProxy {
      * @return a list of nuclear power plants
      * @throws IOException
      */
-    public List<NuclearPowerPlant> getAllNuclearPowerPlants() throws IOException {
+    public List<NuclearPowerPlant> getAllNuclearPowerPlants() throws WebServiceException {
         List<NuclearPowerPlant> list = new ArrayList<>();
         HttpURLConnection urlConnection = null;
         String response = null;
@@ -62,11 +59,11 @@ public class WebServiceProxy {
             }
 
         } catch (MalformedURLException e) {
-            throw new IOException("Malformed web service url provided.", e);
+            throw new WebServiceException("Malformed web service url provided.", e);
         } catch (JSONException e) {
-            throw new IOException("Invalid JSON data received.", e);
+            throw new WebServiceException("Invalid JSON data received.", e);
         } catch (IOException e) {
-            throw new IOException("An error occurred during web service request.", e);
+            throw new WebServiceException("An error occurred during web service request.", e);
         } finally {
             urlConnection.disconnect();
         }
@@ -80,7 +77,7 @@ public class WebServiceProxy {
      * @return a list of nuclear power plants
      * @throws IOException
      */
-    public List<MotorwayRamp> getAllMotorwayRamps() throws IOException {
+    public List<MotorwayRamp> getAllMotorwayRamps() throws WebServiceException {
         List<MotorwayRamp> list = new ArrayList<>();
         HttpURLConnection urlConnection = null;
         String response = null;
@@ -103,11 +100,11 @@ public class WebServiceProxy {
             }
 
         } catch (MalformedURLException e) {
-            throw new IOException("Malformed web service url provided.", e);
+            throw new WebServiceException("Malformed web service url provided.", e);
         } catch (JSONException e) {
-            throw new IOException("Invalid JSON data received.", e);
+            throw new WebServiceException("Invalid JSON data received.", e);
         } catch (IOException e) {
-            throw new IOException("An error occurred during web service request.", e);
+            throw new WebServiceException("An error occurred during web service request.", e);
         } finally {
             urlConnection.disconnect();
         }
