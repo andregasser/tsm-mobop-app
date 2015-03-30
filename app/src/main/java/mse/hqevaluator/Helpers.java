@@ -19,7 +19,7 @@ public class Helpers {
         toast.show();
     }
 
-    public static String inputStreamToString(InputStream inputStream) {
+    public static String inputStreamToString(InputStream inputStream) throws IOException {
         InputStream in = new BufferedInputStream(inputStream);
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         StringBuilder response = new StringBuilder();
@@ -30,10 +30,22 @@ public class Helpers {
                 response.append(line);
             }
             reader.close();
+            return response.toString();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw e;
         }
+    }
 
-        return response.toString();
+    public static int inputStreamToInt(InputStream inputStream) throws IOException {
+        InputStream in = new BufferedInputStream(inputStream);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+        try {
+            String strValue = reader.readLine();
+            int intValue = Integer.parseInt(strValue);
+            return intValue;
+        } catch (IOException e) {
+            throw e;
+        }
     }
 }
