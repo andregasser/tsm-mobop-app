@@ -3,7 +3,6 @@ package mse.hqevaluator;
 import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.text.Layout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SeekBar;
@@ -13,8 +12,6 @@ import android.widget.TextView;
 import android.content.Context;
 import android.graphics.*;
 import android.util.AttributeSet;
-
-import com.google.android.gms.maps.model.Circle;
 
 
 public class SettingsActivity extends ActionBarActivity {
@@ -26,7 +23,7 @@ public class SettingsActivity extends ActionBarActivity {
     private Spinner spinner_2;
 
     private TextView textView_1;
-    private TextView textView_2;
+    private TextView textView_5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +32,13 @@ public class SettingsActivity extends ActionBarActivity {
 
         CustomSeekBar seekbar = new CustomSeekBar(this);
 
-        textView_1 = (TextView) findViewById(R.id.tV_seekBar_1);
-        textView_2 = (TextView) findViewById(R.id.tV_seekBar_2);
+        textView_1 = (TextView) findViewById(R.id.tV_seekBar1_3);
+        textView_5 = (TextView) findViewById(R.id.tV_seekBar2_3);
 
         seekBar_1 = (CustomSeekBar) findViewById(R.id.seekBar1);
         seekBar_2 = (CustomSeekBar) findViewById(R.id.seekBar2);
+        seekBar_1.setMax(100);
+        seekBar_2.setMax(30);
 
         spinner_1 = (Spinner) findViewById(R.id.spinner_1);
         spinner_2 = (Spinner) findViewById(R.id.spinner_2);
@@ -50,9 +49,9 @@ public class SettingsActivity extends ActionBarActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progresValue, boolean fromUser) {
                 progress = progresValue;
-                textView_1.setTextColor(Color.GREEN);
+                textView_1.setTextColor(Color.GRAY);
                 textView_1.setText("");
-                textView_1.append(String.valueOf(progresValue));
+                textView_1.append(String.valueOf(progresValue)+"km");
                 progress = (progress / 5) * 5;
                 seekBar_1.setProgress(progress);
             }
@@ -64,7 +63,7 @@ public class SettingsActivity extends ActionBarActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                textView_1.setTextColor(Color.BLUE);
+                textView_1.setTextColor(Color.BLACK);
             }
         });
 
@@ -75,9 +74,9 @@ public class SettingsActivity extends ActionBarActivity {
             public void onProgressChanged(SeekBar seekBar, int progresValue, boolean fromUser) {
                 progress = progresValue;
                 //Toast.makeText(getApplicationContext(), "Changing seekbar's progress", Toast.LENGTH_SHORT).show();
-                textView_2.setTextColor(Color.GREEN);
-                textView_2.setText("");
-                textView_2.append(String.valueOf(progresValue));
+                textView_5.setTextColor(Color.GRAY);
+                textView_5.setText("");
+                textView_5.append(String.valueOf(progresValue)+"km");
             }
 
             @Override
@@ -87,7 +86,7 @@ public class SettingsActivity extends ActionBarActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                textView_2.setTextColor(Color.BLUE);
+                textView_5.setTextColor(Color.BLACK);
             }
 
         });

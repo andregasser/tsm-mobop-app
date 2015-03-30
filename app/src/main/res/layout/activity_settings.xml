@@ -4,72 +4,159 @@
     android:layout_height="fill_parent"
     tools:context="mse.hqevaluator.SettingsActivity">
 
-    <Spinner
+    <GridLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:columnCount="4"
+        android:rowCount="8"
+        android:id="@+id/gridLayout"></GridLayout>
+
+    <TextView
         android:layout_width="50dip"
-        android:layout_height="50dip"
-        android:id="@+id/spinner_1"
-        android:entries="@array/spinner1_arrays"
-        android:layout_below="@+id/tV_seekBar_1"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignLeft="@+id/spinner_2"
-        android:layout_alignStart="@+id/spinner_2" />
+        android:layout_height="25dip"
+        android:layout_columnSpan="1"
+        android:layout_rowSpan="1"
+        android:text="@string/activity_settings_tV_seekBar1_1"
+        android:layout_gravity="fill_horizontal"
+        android:id="@+id/tV_seekBar1_1"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/gridLayout"
+        android:layout_toStartOf="@+id/gridLayout" />
 
     <Spinner
-        android:layout_width="100dip"
-        android:layout_height="100dip"
-        android:id="@+id/spinner_2"
-        android:entries="@array/spinner2_arrays"
-        android:layout_marginTop="136dp"
-        android:layout_below="@+id/spinner_1"
-        android:layout_marginLeft="200dp"
-        android:layout_alignParentEnd="true"
+        android:layout_width="50dip"
+        android:layout_height="25dip"
+        android:layout_columnSpan="4"
+        android:layout_rowSpan="1"
+        android:id="@+id/spinner_1"
+        android:entries="@array/spinner1_arrays"
+        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        />
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@+id/gridLayout"
+        android:layout_toEndOf="@+id/gridLayout" />
 
     <mse.hqevaluator.CustomSeekBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_columnSpan="1"
+        android:layout_rowSpan="2"
+        android:layout_gravity="fill_horizontal"
         android:id="@+id/seekBar1"
-        android:layout_marginTop="30dp"
-        android:layout_below="@+id/spinner_1"
-        android:layout_alignRight="@+id/spinner_1"
-        android:layout_alignEnd="@+id/spinner_1"
+        android:layout_below="@+id/tV_seekBar1_1"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/spinner_1"
+        android:layout_alignEnd="@+id/spinner_1" />
+
+    <TextView
+        android:layout_width="50dip"
+        android:layout_height="25dip"
+        android:layout_columnSpan="1"
+        android:layout_rowSpan="1"
+        android:text="@string/activity_settings_tV_seekBar1_2"
+        android:layout_gravity="fill_horizontal"
+        android:id="@+id/tV_seekBar1_2"
+        android:layout_alignTop="@+id/tV_seekBar1_3"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    <TextView
+        android:layout_width="50dip"
+        android:layout_height="25dip"
+        android:layout_columnSpan="1"
+        android:layout_rowSpan="1"
+        android:text="@string/activity_settings_tV_seekBar1_3"
+        android:layout_gravity="fill_horizontal"
+        android:id="@+id/tV_seekBar1_3"
+        android:layout_below="@+id/seekBar1"
+        android:layout_centerHorizontal="true" />
+    <TextView
+        android:layout_width="50dip"
+        android:layout_height="25dip"
+        android:layout_columnSpan="1"
+        android:layout_rowSpan="1"
+        android:text="@string/activity_settings_tV_seekBar1_4"
+        android:layout_gravity="fill_horizontal"
+        android:id="@+id/tV_seekBar1_4"
+        android:layout_alignTop="@+id/tV_seekBar1_3"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
+    <TextView
+        android:layout_width="50dip"
+        android:layout_height="25dip"
+        android:layout_columnSpan="1"
+        android:layout_rowSpan="3"
+        android:text="@string/activity_settings_tV_seekBar2_1"
+        android:id="@+id/tV_seekBar_5"
+        android:enabled="false"
+        android:layout_marginTop="39dp"
+        android:layout_below="@+id/tV_seekBar1_2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/gridLayout"
+        android:layout_alignEnd="@+id/gridLayout" />
+
+    <Spinner
+        android:layout_width="50dip"
+        android:layout_height="25dip"
+        android:layout_columnSpan="4"
+        android:layout_rowSpan="3"
+        android:id="@+id/spinner_2"
+        android:entries="@array/spinner2_arrays"
+        android:layout_alignTop="@+id/tV_seekBar_5"
+        android:layout_toRightOf="@+id/tV_seekBar_5"
+        android:layout_alignRight="@+id/tV_seekBar1_4"
+        android:layout_alignEnd="@+id/tV_seekBar1_4" />
+
     <mse.hqevaluator.CustomSeekBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_columnSpan="1"
+        android:layout_rowSpan="4"
+        android:layout_gravity="fill_horizontal"
         android:id="@+id/seekBar2"
-        android:layout_below="@+id/spinner_2"
+        android:layout_below="@+id/tV_seekBar_5"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignRight="@+id/spinner_2"
-        android:layout_alignEnd="@+id/spinner_2"
-        android:layout_marginTop="30dp"
+        android:layout_alignEnd="@+id/spinner_2" />
+
+    <TextView
+        android:layout_width="50dip"
+        android:layout_height="25dip"
+        android:layout_columnSpan="1"
+        android:layout_rowSpan="1"
+        android:text="@string/activity_settings_tV_seekBar2_2"
+        android:layout_gravity="fill_horizontal"
+        android:id="@+id/tV_seekBar2_2"
+        android:layout_below="@+id/seekBar2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    <TextView
+        android:layout_width="50dip"
+        android:layout_height="25dip"
+        android:layout_columnSpan="1"
+        android:layout_rowSpan="1"
+        android:text="@string/activity_settings_tV_seekBar2_3"
+        android:layout_gravity="fill_horizontal"
+        android:id="@+id/tV_seekBar2_3"
+        android:layout_below="@+id/seekBar2"
+        android:layout_alignLeft="@+id/tV_seekBar1_3"
+        android:layout_alignStart="@+id/tV_seekBar1_3" />
+    <TextView
+        android:layout_width="50dip"
+        android:layout_height="25dip"
+        android:layout_columnSpan="1"
+        android:layout_rowSpan="1"
+        android:text="@string/activity_settings_tV_seekBar2_4"
+        android:layout_gravity="fill_horizontal"
+        android:id="@+id/tV_seekBar2_4"
+        android:layout_alignTop="@+id/tV_seekBar2_2"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="seekbar_1"
-        android:id="@+id/tV_seekBar_1"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="seekbar_2"
-        android:id="@+id/tV_seekBar_2"
-        android:enabled="false"
-        android:layout_alignTop="@+id/spinner_2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
