@@ -3,6 +3,7 @@ package mse.hqevaluator;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -17,16 +18,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.Iterator;
 import java.util.List;
 
-import mse.hqevaluator.asynctasks.GetAllMotorwayRampsTask;
-import mse.hqevaluator.asynctasks.OnAllMotorwayRampsReceivedListener;
-import mse.hqevaluator.asynctasks.OnAllNuclearPowerPlantsReceivedListener;
-import mse.hqevaluator.asynctasks.AsyncTaskResult;
-import mse.hqevaluator.asynctasks.AsyncTaskResultStatus;
-import mse.hqevaluator.asynctasks.GetAllNuclearPowerPlantsTask;
+import mse.hqevaluator.entities.MotorwayRamp;
+import mse.hqevaluator.entities.NuclearPowerPlant;
+import mse.hqevaluator.persistence.DbHelper;
+import mse.hqevaluator.persistence.MotorwayRampTable;
+import mse.hqevaluator.persistence.NuclearPowerPlantTable;
 
 public class MapsActivity extends ActionBarActivity
-    implements OnAllNuclearPowerPlantsReceivedListener, OnAllMotorwayRampsReceivedListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+    implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
@@ -34,10 +33,13 @@ public class MapsActivity extends ActionBarActivity
 
     private Location location;
 
+    private DbHelper dbHelper = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        dbHelper = new DbHelper(this);
         setUpMapIfNeeded();
         buildGoogleApiClient();
     }
@@ -98,16 +100,49 @@ public class MapsActivity extends ActionBarActivity
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        new GetAllNuclearPowerPlantsTask(this).execute();
-        new GetAllMotorwayRampsTask(this).execute();
+        Log.i(this.getLocalClassName(), "setUpMap: Setting up map.");
+        placeNuclearPowerPlants();
+        placeMotorwayRamps();
+        Log.i(this.getLocalClassName(), "setUpMap: Map set up.");
+    }
+
+    void placeNuclearPowerPlants() {
+        NuclearPowerPlantTable table = dbHelper.getNuclearPowerPlantTable();
+        List<NuclearPowerPlant> nuclearPowerPlants = table.getAll();
+
+        Iterator<NuclearPowerPlant> iterator = nuclearPowerPlants.iterator();
+
+        while(iterator.hasNext()) {
+            NuclearPowerPlant plant = iterator.next();
+            mMap.addMarker(
+                    new MarkerOptions()
+                            .position(new LatLng(plant.Latitude, plant.Longitude))
+                            .title(plant.Name + "\nLatitude: " + plant.Latitude + "\nLongitude: " + plant.Longitude));
+            Log.i(this.getLocalClassName(), "setUpMap: Placing marker for " + plant.Name);
+        }
+    }
+
+    void placeMotorwayRamps() {
+        MotorwayRampTable table = dbHelper.getMotorwayRampTable();
+        List<MotorwayRamp> motorwayRamps = table.getAll();
+
+        Iterator<MotorwayRamp> iterator = motorwayRamps.iterator();
+
+        while(iterator.hasNext()) {
+            MotorwayRamp ramp = iterator.next();
+            mMap.addMarker(
+                    new MarkerOptions()
+                            .position(new LatLng(ramp.Latitude, ramp.Longitude))
+                            .title(ramp.Name + "\nMotorway: " + ramp.Motorway + "\nLatitude: " + ramp.Latitude + "\nLongitude: " + ramp.Longitude)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+            Log.i(this.getLocalClassName(), "setUpMap: Placing marker for " + ramp.Name);
+        }
     }
 
     @Override
     public void onConnected(Bundle connectionHint) {
         location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
         setlocationtocurent();
-
-
     }
 
     @Override
@@ -132,53 +167,6 @@ public class MapsActivity extends ActionBarActivity
         else {
             // Display toast for debugging purposes
             Helpers.showToast("Location was empty", getApplicationContext());
-        }
-    }
-
-    @Override
-    public void onAllNuclearPowerPlantsReceived(AsyncTaskResult<List<NuclearPowerPlant>> result) {
-        List<NuclearPowerPlant> list = result.getResult();
-        Exception e = result.getException();
-        AsyncTaskResultStatus status = result.getStatus();
-
-        if (status.equals(AsyncTaskResultStatus.SUCCESS)) {
-            // Everything was fine.
-            Iterator<NuclearPowerPlant> iterator = list.iterator();
-
-            while(iterator.hasNext()){
-                NuclearPowerPlant plant = iterator.next();
-                mMap.addMarker(
-                    new MarkerOptions()
-                        .position(new LatLng(plant.Latitude, plant.Longitude))
-                        .title(plant.Name + "\nLatitude: " + plant.Latitude + "\nLongitude: " + plant.Longitude));
-            }
-        } else {
-            // There was an error. We should display an error to the user.
-            // TODO: Display error message
-        }
-    }
-
-    @Override
-    public void onAllMotorwayRampsReceived(AsyncTaskResult<List<MotorwayRamp>> result) {
-        List<MotorwayRamp> list = result.getResult();
-        Exception e = result.getException();
-        AsyncTaskResultStatus status = result.getStatus();
-
-        if (status.equals(AsyncTaskResultStatus.SUCCESS)) {
-            // Everything was fine.
-            Iterator<MotorwayRamp> iterator = list.iterator();
-
-            while(iterator.hasNext()){
-                MotorwayRamp ramp = iterator.next();
-                mMap.addMarker(
-                        new MarkerOptions()
-                                .position(new LatLng(ramp.Latitude, ramp.Longitude))
-                                .title(ramp.Name + "\nLatitude: " + ramp.Latitude + "\nLongitude: " + ramp.Longitude)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-            }
-        } else {
-            // There was an error. We should display an error to the user.
-            // TODO: Display error message
         }
     }
 }
