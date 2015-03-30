@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:text="@string/activity_main_button_show_map"
-            android:drawableLeft="@drawable/map"
+            android:drawableLeft="@mipmap/maps"
             android:onClick="openMapsActivity"
             style="@android:style/Widget.Holo.Button" />
 
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:text="@string/activity_main_button_settings"
-            android:drawableLeft="@drawable/settings"
+            android:drawableLeft="@mipmap/settings"
             android:onClick="openSettingsActivity"
             style="@android:style/Widget.Holo.Button" />
 
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:text="@string/activity_main_button_about"
-            android:drawableLeft="@drawable/about"
+            android:drawableLeft="@mipmap/info"
             style="@android:style/Widget.Holo.Button" />
 
     </LinearLayout>
