@@ -3,6 +3,7 @@ package mse.hqevaluator;
 import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SeekBar;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import android.content.Context;
 import android.graphics.*;
 import android.util.AttributeSet;
+import android.content.SharedPreferences;
 
 
 public class SettingsActivity extends ActionBarActivity {
@@ -24,11 +26,27 @@ public class SettingsActivity extends ActionBarActivity {
 
     private TextView textView_1;
     private TextView textView_5;
+    private SharedPreferences.Editor editor;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        String slider = null;
+        editor = getSharedPreferences(slider, MODE_PRIVATE).edit();
+
+
+        SharedPreferences prefs = getSharedPreferences(slider, MODE_PRIVATE);
+
+        //Log.d("Sting","ist"+prefs.getInt("AKW",0));
+
+
+
+
 
         CustomSeekBar seekbar = new CustomSeekBar(this);
 
@@ -36,6 +54,8 @@ public class SettingsActivity extends ActionBarActivity {
         textView_5 = (TextView) findViewById(R.id.tV_seekBar2_3);
 
         seekBar_1 = (CustomSeekBar) findViewById(R.id.seekBar1);
+        Log.d(" ","AKW INT IST"+prefs.getInt("AKW",0));
+        seekBar_1.setProgress(prefs.getInt("AKW",0));
         seekBar_2 = (CustomSeekBar) findViewById(R.id.seekBar2);
         seekBar_1.setMax(100);
         seekBar_2.setMax(30);
@@ -54,6 +74,9 @@ public class SettingsActivity extends ActionBarActivity {
                 textView_1.append(String.valueOf(progresValue)+"km");
                 progress = (progress / 5) * 5;
                 seekBar_1.setProgress(progress);
+                Log.d(" ","setAKW"+progress);
+                editor.putInt("AKW",progress);
+                editor.commit();
             }
 
             @Override
