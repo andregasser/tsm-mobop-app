@@ -51,8 +51,9 @@ import mse.hqevaluator.asynctasks.AsyncTaskResultStatus;
 import mse.hqevaluator.asynctasks.GetAllNuclearPowerPlantsTask;
 import mse.hqevaluator.entities.MotorwayRamp;
 import mse.hqevaluator.entities.NuclearPowerPlant;
-
-
+import mse.hqevaluator.persistence.DbHelper;
+import mse.hqevaluator.persistence.MotorwayRampTable;
+import mse.hqevaluator.persistence.NuclearPowerPlantTable;
 
 public class MapsActivity extends ActionBarActivity
     implements OnAllNuclearPowerPlantsReceivedListener, OnAllMotorwayRampsReceivedListener,
@@ -64,10 +65,13 @@ public class MapsActivity extends ActionBarActivity
 
     private Location location;
 
+    private DbHelper dbHelper = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        dbHelper = new DbHelper(this);
         setUpMapIfNeeded();
         buildGoogleApiClient();
     }
@@ -129,8 +133,43 @@ public class MapsActivity extends ActionBarActivity
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        new GetAllNuclearPowerPlantsTask(this).execute();
-        new GetAllMotorwayRampsTask(this).execute();
+        Log.i(this.getLocalClassName(), "setUpMap: Setting up map.");
+        placeNuclearPowerPlants();
+        placeMotorwayRamps();
+        Log.i(this.getLocalClassName(), "setUpMap: Map set up.");
+    }
+
+    void placeNuclearPowerPlants() {
+        NuclearPowerPlantTable table = dbHelper.getNuclearPowerPlantTable();
+        List<NuclearPowerPlant> nuclearPowerPlants = table.getAll();
+
+        Iterator<NuclearPowerPlant> iterator = nuclearPowerPlants.iterator();
+
+        while(iterator.hasNext()) {
+            NuclearPowerPlant plant = iterator.next();
+            mMap.addMarker(
+                    new MarkerOptions()
+                            .position(new LatLng(plant.Latitude, plant.Longitude))
+                            .title(plant.Name + "\nLatitude: " + plant.Latitude + "\nLongitude: " + plant.Longitude));
+            Log.i(this.getLocalClassName(), "setUpMap: Placing marker for " + plant.Name);
+        }
+    }
+
+    void placeMotorwayRamps() {
+        MotorwayRampTable table = dbHelper.getMotorwayRampTable();
+        List<MotorwayRamp> motorwayRamps = table.getAll();
+
+        Iterator<MotorwayRamp> iterator = motorwayRamps.iterator();
+
+        while(iterator.hasNext()) {
+            MotorwayRamp ramp = iterator.next();
+            mMap.addMarker(
+                    new MarkerOptions()
+                            .position(new LatLng(ramp.Latitude, ramp.Longitude))
+                            .title(ramp.Name + "\nMotorway: " + ramp.Motorway + "\nLatitude: " + ramp.Latitude + "\nLongitude: " + ramp.Longitude)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+            Log.i(this.getLocalClassName(), "setUpMap: Placing marker for " + ramp.Name);
+        }
     }
 
     @Override

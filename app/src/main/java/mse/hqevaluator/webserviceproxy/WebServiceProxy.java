@@ -23,12 +23,12 @@ public class WebServiceProxy {
     /*
      * Web service URL for power plants.
      */
-    private String baseUrlPowerPlant = "http://tsm-mobop-service.azurewebsites.net/api/nuclearpowerplant";
+    private String baseUrlNuclearPowerPlant = "http://tsm-mobop-service.azurewebsites.net/api/nuclearpowerplant";
 
     /*
      * Web Service URL for motorways.
      */
-    private String baseUrlMotorway = "http://tsm-mobop-service.azurewebsites.net/api/motorwayramp";
+    private String baseUrlMotorwayRamp = "http://tsm-mobop-service.azurewebsites.net/api/motorwayramp";
 
     /**
      * Returns all nuclear power plants.
@@ -42,7 +42,7 @@ public class WebServiceProxy {
         String response = null;
 
         try {
-            URL url = new URL(baseUrlPowerPlant);
+            URL url = new URL(baseUrlNuclearPowerPlant);
             urlConnection = (HttpURLConnection) url.openConnection();
             response = Helpers.inputStreamToString(urlConnection.getInputStream());
             JSONArray jArray = new JSONArray(response);
@@ -57,7 +57,6 @@ public class WebServiceProxy {
                 plant.Latitude = oneObject.getDouble("Latitude");
                 list.add(plant);
             }
-
         } catch (MalformedURLException e) {
             throw new WebServiceException("Malformed web service url provided.", e);
         } catch (JSONException e) {
@@ -71,11 +70,29 @@ public class WebServiceProxy {
         return list;
     }
 
+    public int getCountNuclearPowerPlants() throws WebServiceException {
+        HttpURLConnection urlConnection = null;
+        int response = 0;
+
+        try {
+            URL url = new URL(baseUrlNuclearPowerPlant + "/count");
+            urlConnection = (HttpURLConnection) url.openConnection();
+            response = Helpers.inputStreamToInt(urlConnection.getInputStream());
+            return response;
+        } catch (MalformedURLException e) {
+            throw new WebServiceException("Malformed web service url provided.", e);
+        } catch (IOException e) {
+            throw new WebServiceException("An error occurred during web service request.", e);
+        } finally {
+            urlConnection.disconnect();
+        }
+    }
+
     /**
-     * Returns all nuclear power plants.
+     * Returns all motorway ramps.
      *
-     * @return a list of nuclear power plants
-     * @throws IOException
+     * @return a list of motorway ramps
+     * @throws WebServiceException
      */
     public List<MotorwayRamp> getAllMotorwayRamps() throws WebServiceException {
         List<MotorwayRamp> list = new ArrayList<>();
@@ -83,7 +100,7 @@ public class WebServiceProxy {
         String response = null;
 
         try {
-            URL url = new URL(baseUrlMotorway);
+            URL url = new URL(baseUrlMotorwayRamp);
             urlConnection = (HttpURLConnection) url.openConnection();
             response = Helpers.inputStreamToString(urlConnection.getInputStream());
             JSONArray jArray = new JSONArray(response);
@@ -110,5 +127,23 @@ public class WebServiceProxy {
         }
 
         return list;
+    }
+
+    public int getCountMotorwayRamps() throws WebServiceException {
+        HttpURLConnection urlConnection = null;
+        int response = 0;
+
+        try {
+            URL url = new URL(baseUrlMotorwayRamp + "/count");
+            urlConnection = (HttpURLConnection) url.openConnection();
+            response = Helpers.inputStreamToInt(urlConnection.getInputStream());
+            return response;
+        } catch (MalformedURLException e) {
+            throw new WebServiceException("Malformed web service url provided.", e);
+        } catch (IOException e) {
+            throw new WebServiceException("An error occurred during web service request.", e);
+        } finally {
+            urlConnection.disconnect();
+        }
     }
 }

@@ -1,28 +1,63 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/outerLinearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="fill_horizontal"
     android:orientation="vertical">
 
-    <Button
-        android:layout_height="wrap_content"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/innerLinearLayout"
         android:layout_width="match_parent"
-        android:text="@string/activity_main_button_show_map"
-        android:drawableLeft="@drawable/map"
-        android:onClick="openMapsActivity" />
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-    <Button
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="@string/activity_main_button_settings"
-        android:drawableLeft="@drawable/settings"
-        android:onClick="openSettingsActivity" />
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/activity_main_button_show_map"
+            android:drawableLeft="@drawable/map"
+            android:onClick="openMapsActivity"
+            style="@android:style/Widget.Holo.Button" />
 
-    <Button
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/activity_main_button_settings"
+            android:drawableLeft="@drawable/settings"
+            android:onClick="openSettingsActivity"
+            style="@android:style/Widget.Holo.Button" />
+
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/activity_main_button_about"
+            android:drawableLeft="@drawable/about"
+            style="@android:style/Widget.Holo.Button" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/updateProgressBar"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:indeterminate="false"
+        android:indeterminateOnly="false"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:paddingLeft="80px"
+        android:paddingRight="80px" />
+
+    <TextView
+        android:id="@+id/updateProgressText"
         android:layout_width="match_parent"
-        android:text="@string/activity_main_button_about"
-        android:drawableLeft="@drawable/about" />
+        android:layout_height="wrap_content"
+        android:text="@string/updatingData"
+        android:layout_gravity="bottom|center"
+        android:textStyle="bold"
+        android:visibility="visible"
+        android:gravity="center"
+        android:paddingBottom="40px"
+        android:paddingTop="20px" />
 
 </LinearLayout>
