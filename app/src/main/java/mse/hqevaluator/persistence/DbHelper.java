@@ -31,7 +31,7 @@ public class DbHelper {
 
         // Check if we must create the schema as well
         if (!tableExists("LastUpdated")) {
-            Log.i("DbHelper", "LastUpdated table is missing. Web must create the schema.");
+            Log.i("DbHelper", "LastUpdated table is missing. We must create the schema.");
             createSchema(db);
         }
 
