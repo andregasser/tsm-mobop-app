@@ -134,51 +134,49 @@ public class MapsActivity extends ActionBarActivity
      */
     private void setUpMap() {
         Log.i(this.getLocalClassName(), "setUpMap: Setting up map.");
-        placeNuclearPowerPlants();
-        placeMotorwayRamps();
+        //placeNuclearPowerPlants();
+        //placeMotorwayRamps();
         Log.i(this.getLocalClassName(), "setUpMap: Map set up.");
     }
 
-    void placeNuclearPowerPlants() {
-        NuclearPowerPlantTable table = dbHelper.getNuclearPowerPlantTable();
-        List<NuclearPowerPlant> nuclearPowerPlants = table.getAll();
-
-        Iterator<NuclearPowerPlant> iterator = nuclearPowerPlants.iterator();
-
-        while(iterator.hasNext()) {
-            NuclearPowerPlant plant = iterator.next();
-            mMap.addMarker(
-                    new MarkerOptions()
-                            .position(new LatLng(plant.Latitude, plant.Longitude))
-                            .title(plant.Name + "\nLatitude: " + plant.Latitude + "\nLongitude: " + plant.Longitude));
-            Log.i(this.getLocalClassName(), "setUpMap: Placing marker for " + plant.Name);
-        }
-    }
-
-    void placeMotorwayRamps() {
-        MotorwayRampTable table = dbHelper.getMotorwayRampTable();
-        List<MotorwayRamp> motorwayRamps = table.getAll();
-
-        Iterator<MotorwayRamp> iterator = motorwayRamps.iterator();
-
-        while(iterator.hasNext()) {
-            MotorwayRamp ramp = iterator.next();
-            mMap.addMarker(
-                    new MarkerOptions()
-                            .position(new LatLng(ramp.Latitude, ramp.Longitude))
-                            .title(ramp.Name + "\nMotorway: " + ramp.Motorway + "\nLatitude: " + ramp.Latitude + "\nLongitude: " + ramp.Longitude)
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-            Log.i(this.getLocalClassName(), "setUpMap: Placing marker for " + ramp.Name);
-        }
-    }
+//    void placeNuclearPowerPlants() {
+//        NuclearPowerPlantTable table = dbHelper.getNuclearPowerPlantTable();
+//        List<NuclearPowerPlant> nuclearPowerPlants = table.getAll();
+//
+//        Iterator<NuclearPowerPlant> iterator = nuclearPowerPlants.iterator();
+//
+//        while(iterator.hasNext()) {
+//            NuclearPowerPlant plant = iterator.next();
+//            mMap.addMarker(
+//                    new MarkerOptions()
+//                            .position(new LatLng(plant.Latitude, plant.Longitude))
+//                            .title(plant.Name + "\nLatitude: " + plant.Latitude + "\nLongitude: " + plant.Longitude));
+//            Log.i(this.getLocalClassName(), "setUpMap: Placing marker for " + plant.Name);
+//        }
+//    }
+//
+//    void placeMotorwayRamps() {
+//        MotorwayRampTable table = dbHelper.getMotorwayRampTable();
+//        List<MotorwayRamp> motorwayRamps = table.getAll();
+//
+//        Iterator<MotorwayRamp> iterator = motorwayRamps.iterator();
+//
+//        while(iterator.hasNext()) {
+//            MotorwayRamp ramp = iterator.next();
+//            mMap.addMarker(
+//                    new MarkerOptions()
+//                            .position(new LatLng(ramp.Latitude, ramp.Longitude))
+//                            .title(ramp.Name + "\nMotorway: " + ramp.Motorway + "\nLatitude: " + ramp.Latitude + "\nLongitude: " + ramp.Longitude)
+//                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+//            Log.i(this.getLocalClassName(), "setUpMap: Placing marker for " + ramp.Name);
+//        }
+//    }
 
     @Override
     public void onConnected(Bundle connectionHint) {
         location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
         setlocationtocurent();
         addHeatMap();
-
-
     }
 
     @Override
@@ -251,6 +249,21 @@ public class MapsActivity extends ActionBarActivity
         //        .radius(10000)
         //        .strokeColor(Color.RED)
         //        .fillColor(Color.BLUE));
+
+
+        NuclearPowerPlantTable table = dbHelper.getNuclearPowerPlantTable();
+        List<NuclearPowerPlant> nuclearPowerPlants = table.getAll();
+
+        Iterator<NuclearPowerPlant> iterator = nuclearPowerPlants.iterator();
+
+        while(iterator.hasNext()) {
+            NuclearPowerPlant plant = iterator.next();
+            //mMap.addMarker(
+            //        new MarkerOptions()
+            //                .position(new LatLng(plant.Latitude, plant.Longitude))
+            //                .title(plant.Name + "\nLatitude: " + plant.Latitude + "\nLongitude: " + plant.Longitude));
+            Log.i(this.getLocalClassName(), "setUpMap: Placing marker for " + plant.Name);
+        }
 
 
 
