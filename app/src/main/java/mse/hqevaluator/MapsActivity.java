@@ -208,48 +208,27 @@ public class MapsActivity extends ActionBarActivity
 
     private TileOverlay mOverlay;
 
-    private final LatLng ZURICH = new LatLng(47.377911, 8.524798);
+    private LatLng actualLocation = new LatLng(47.159325, 7.342790);
 
-    private final WeightedLatLng ZU = new WeightedLatLng(ZURICH, 1);
+    private WeightedLatLng actualLocationweighted = new WeightedLatLng(actualLocation, 1);
 
     private static final int[] colors = {
-            Color.rgb(102, 225, 0),
-            Color.rgb(255, 0, 0)
+            Color.rgb(243, 156, 18),
+            Color.rgb(192, 57, 43)
     };
 
     private static final float[] startPoints = {
             0.1f, 2f
     };
 
+
     private void addHeatMap() {
-        ArrayList<WeightedLatLng> list = new ArrayList<WeightedLatLng>();
-        list.add(ZU);
-        LatLng nlocationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-        WeightedLatLng locationLatLng = new WeightedLatLng(nlocationLatLng,1);
+        ArrayList<WeightedLatLng> weightedLatLngakw = new ArrayList<WeightedLatLng>();
+        //weightedLatLngakw.add(actualLocationweighted);
 
 
-        list.add(locationLatLng);
-
-
-        Gradient gradient = new Gradient(colors, startPoints);
-
-        // Create a heat map tile provider, passing it the latlngs of the police stations.
-        mProvider = new HeatmapTileProvider.Builder()
-                .weightedData(list)
-                .gradient(gradient)
-                .build();
-        // Add a tile overlay to the map, using the heat map tile provider.
-        mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
-
-        mProvider.setOpacity(0.7);
-        mProvider.setRadius(100);
-
-        //Circle circle = mMap.addCircle(new CircleOptions()
-        //        .center(nlocationLatLng)
-        //        .radius(10000)
-        //        .strokeColor(Color.RED)
-        //        .fillColor(Color.BLUE));
-
+        //LatLng nlocationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+        //WeightedLatLng locationLatLng = new WeightedLatLng(nlocationLatLng,1);
 
         NuclearPowerPlantTable table = dbHelper.getNuclearPowerPlantTable();
         List<NuclearPowerPlant> nuclearPowerPlants = table.getAll();
@@ -262,10 +241,31 @@ public class MapsActivity extends ActionBarActivity
             //        new MarkerOptions()
             //                .position(new LatLng(plant.Latitude, plant.Longitude))
             //                .title(plant.Name + "\nLatitude: " + plant.Latitude + "\nLongitude: " + plant.Longitude));
-            Log.i(this.getLocalClassName(), "setUpMap: Placing marker for " + plant.Name);
+            //Log.i(this.getLocalClassName(), "setUpMap: Placing marker for " + plant.Name+plant.Latitude+plant.Longitude);
+
+            actualLocation = null;
+            actualLocationweighted = null;
+            actualLocation = new LatLng(plant.Longitude, plant.Latitude);
+            actualLocationweighted = new WeightedLatLng(actualLocation, 1);
+            weightedLatLngakw.add(actualLocationweighted);
         }
+        //weightedLatLngakw.add(actualLocationweighted);
+        Log.d("","akwlist is "+weightedLatLngakw);
 
 
+
+        Gradient gradient = new Gradient(colors, startPoints);
+
+        // Create a heat map tile provider, passing it the latlngs of the police stations.
+        mProvider = new HeatmapTileProvider.Builder()
+                .weightedData(weightedLatLngakw)
+                .gradient(gradient)
+                .build();
+        // Add a tile overlay to the map, using the heat map tile provider.
+        mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+
+        mProvider.setOpacity(0.7);
+        mProvider.setRadius(100);
 
     }
 
@@ -274,79 +274,37 @@ public class MapsActivity extends ActionBarActivity
 
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
-
-        //Log.d("ZOOOO","Zoom"+(int) (cameraPosition.zoom*100));
-        //Log.d("Mapgröße","viereckkoordinaten"+mMap.getProjection().getVisibleRegion());
-
-       // Log.d("ZOOOO", "Zoom" + mMap.getCameraPosition().zoom);
-
-
-        //Log.d("Mapgröße","getWidth"+layout.getWidth());
-
-
-        //Collection data = new LatLng(farleft);
-
-//        ArrayList<LatLng> data = new ArrayList<LatLng>();
-//        data.add(farleft);
-//        data.add(nearleft);
-//        data.add(farright);
-//        data.add(nearright);
-
-//        mProvider.setData(data);
-
-        float results[] = new float[1];
-        Location.distanceBetween(
-                mMap.getProjection().getVisibleRegion().nearLeft.latitude,
-                mMap.getProjection().getVisibleRegion().nearLeft.longitude,
-                mMap.getProjection().getVisibleRegion().farRight.latitude,
-                mMap.getProjection().getVisibleRegion().farRight.longitude,
-                results); //visible distance on display
-
-        //Log.d("Distance","ist"+distance);
-        Log.d("Distance0","ist"+results[0]);
-
-        LinearLayout layout = (LinearLayout) this.findViewById(R.id.maps_activity);
-        double meterPerPixel = results[0] / Math.hypot(layout.getWidth(),layout.getHeight());
-
-        //float pixelPerMeter = layout.getWidth() / results[0];
-
-        Log.d("meterPerPixel","ist"+meterPerPixel);
-
-
-        int radius = 1000;
-        int actualRadius = (int)(radius / meterPerPixel);
-
-        Log.d("Radius","ist"+actualRadius);
-
-        mProvider.setRadius(actualRadius);
-
-        //mProvider.setRadius();
-
+//
+//        float results[] = new float[1];
+//        Location.distanceBetween(
+//                mMap.getProjection().getVisibleRegion().nearLeft.latitude,
+//                mMap.getProjection().getVisibleRegion().nearLeft.longitude,
+//                mMap.getProjection().getVisibleRegion().farRight.latitude,
+//                mMap.getProjection().getVisibleRegion().farRight.longitude,
+//                results); //visible distance on display
+//
+//        //Log.d("Distance","ist"+distance);
+//        //Log.d("Distance0","ist"+results[0]);
+//
+//        LinearLayout layout = (LinearLayout) this.findViewById(R.id.maps_activity);
+//        double meterPerPixel = results[0] / Math.hypot(layout.getWidth(),layout.getHeight());
+//
+//        //float pixelPerMeter = layout.getWidth() / results[0];
+//
+//        //Log.d("meterPerPixel","ist"+meterPerPixel);
+//
+//
+//        int radius = 100;
+//        int actualRadius = (int)(radius / meterPerPixel);
+//
+//        //Log.d("Radius","ist"+actualRadius);
+//
+//        mProvider.setRadius(actualRadius);
+//
+//        //mProvider.setRadius();
+//
 
     }
-
-//    public GoogleMap.OnCameraChangeListener getCameraChangeListener()
-//    {
-//        return new GoogleMap.OnCameraChangeListener()
-//        {
-//            @Override
-//            public void onCameraChange(CameraPosition position)
-//            {
-//                Log.d("Zoom", "Zoom: " + position.zoom);
-//
-//                if(previousZoomLevel != position.zoom)
-//                {
-//                    isZooming = true;
-//                }
-//
-//                previousZoomLevel = position.zoom;
-//            }
-//        };
-//    }
-
-//    google.maps.event.addListener(map, 'zoom_changed', function () {
-//        heatmap.setOptions({radius:getNewRadius()});
-//    });
 
     @Override
     public void onAllNuclearPowerPlantsReceived(AsyncTaskResult<List<NuclearPowerPlant>> result) {
