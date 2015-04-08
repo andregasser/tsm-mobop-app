@@ -8,12 +8,10 @@ import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.overlay.Marker;
+import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
+import com.mapbox.mapboxsdk.views.MapView;
 
 import java.util.Iterator;
 import java.util.List;
@@ -27,11 +25,11 @@ import mse.hqevaluator.persistence.NuclearPowerPlantTable;
 public class MapsActivity extends ActionBarActivity
     implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-
-    private GoogleApiClient googleApiClient;
+    private MapView mapView = null;
 
     private Location location;
+
+    private GoogleApiClient googleApiClient;
 
     private DbHelper dbHelper = null;
 
@@ -47,7 +45,6 @@ public class MapsActivity extends ActionBarActivity
     @Override
     protected void onStart() {
         super.onStart();
-        googleApiClient.connect();
     }
 
     @Override
@@ -56,53 +53,30 @@ public class MapsActivity extends ActionBarActivity
         setUpMapIfNeeded();
     }
 
-    protected synchronized void buildGoogleApiClient() {
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .build();
-        googleApiClient.connect();
-
-    }
-
-    /**
-     * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
-     * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * call {@link #setUpMap()} once when {@link #mMap} is not null.
-     * <p/>
-     * If it isn't installed {@link SupportMapFragment} (and
-     * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
-     * install/update the Google Play services APK on their device.
-     * <p/>
-     * A user can return to this FragmentActivity after following the prompt and correctly
-     * installing/updating/enabling the Google Play services. Since the FragmentActivity may not
-     * have been completely destroyed during this process (it is likely that it would only be
-     * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
-     * method in {@link #onResume()} to guarantee that it will be called.
-     */
     private void setUpMapIfNeeded() {
-        // Do a null check to confirm that we have not already instantiated the map.
-        if (mMap == null) {
-            // Try to obtain the map from the SupportMapFragment.
-            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-                    .getMap();
-            // Check if we were successful in obtaining the map.
-            if (mMap != null) {
+        if (mapView == null) {
+            mapView = (MapView)this.findViewById(R.id.mapview);
+            if (mapView != null) {
                 setUpMap();
             }
         }
     }
 
-    /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
-     * <p/>
-     * This should only be called once and when we are sure that {@link #mMap} is not null.
-     */
+    private void buildGoogleApiClient() {
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
     private void setUpMap() {
         Log.i(this.getLocalClassName(), "setUpMap: Setting up map.");
         placeNuclearPowerPlants();
         placeMotorwayRamps();
+        mapView.setCenter(new LatLng(47.379102, 8.535660));
+        Marker marker = new Marker(mapView, "Foo", "Bar", new LatLng(47.379102, 8.535660));
+        mapView.addMarker(marker);
         Log.i(this.getLocalClassName(), "setUpMap: Map set up.");
     }
 
@@ -114,10 +88,9 @@ public class MapsActivity extends ActionBarActivity
 
         while(iterator.hasNext()) {
             NuclearPowerPlant plant = iterator.next();
-            mMap.addMarker(
-                    new MarkerOptions()
-                            .position(new LatLng(plant.Latitude, plant.Longitude))
-                            .title(plant.Name + "\nLatitude: " + plant.Latitude + "\nLongitude: " + plant.Longitude));
+            LatLng pos = new LatLng(plant.Latitude, plant.Longitude);
+            Marker marker = new Marker(this.mapView, plant.Name, plant.Description, pos);
+            this.mapView.addMarker(marker);
             Log.i(this.getLocalClassName(), "setUpMap: Placing marker for " + plant.Name);
         }
     }
@@ -125,24 +98,19 @@ public class MapsActivity extends ActionBarActivity
     void placeMotorwayRamps() {
         MotorwayRampTable table = dbHelper.getMotorwayRampTable();
         List<MotorwayRamp> motorwayRamps = table.getAll();
-
         Iterator<MotorwayRamp> iterator = motorwayRamps.iterator();
 
         while(iterator.hasNext()) {
             MotorwayRamp ramp = iterator.next();
-            mMap.addMarker(
-                    new MarkerOptions()
-                            .position(new LatLng(ramp.Latitude, ramp.Longitude))
-                            .title(ramp.Name + "\nMotorway: " + ramp.Motorway + "\nLatitude: " + ramp.Latitude + "\nLongitude: " + ramp.Longitude)
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+            LatLng pos = new LatLng(ramp.Latitude, ramp.Longitude);
+            Marker marker = new Marker(this.mapView, ramp.Name, ramp.Motorway, pos);
+            this.mapView.addMarker(marker);
             Log.i(this.getLocalClassName(), "setUpMap: Placing marker for " + ramp.Name);
         }
     }
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        setlocationtocurent();
     }
 
     @Override
@@ -153,20 +121,5 @@ public class MapsActivity extends ActionBarActivity
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Helpers.showToast("Connection failed", getApplicationContext());
-    }
-
-    private void setlocationtocurent() {
-        if (location != null) {
-            // Display toast for debugging purposes
-            Helpers.showToast("Lat: " + location.getLatitude() + "\nLng: " + location.getLongitude(), getApplicationContext());
-
-            LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
-            float zoom = 8.0f;    // valid values between 2.0 and 21.0
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, zoom));
-        }
-        else {
-            // Display toast for debugging purposes
-            Helpers.showToast("Location was empty", getApplicationContext());
-        }
     }
 }
