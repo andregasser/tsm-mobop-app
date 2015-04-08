@@ -168,7 +168,7 @@ public class MapsActivity extends ActionBarActivity
 
     private void addHeatMap() {
 
-        Log.d(" ","AKW INT IST"+prefs.getInt("akw",0));
+        Log.d(" ","AKW INT IST"+prefs.getInt("nuclear_power_plant",0));
 
         //*********************************************************************************NuclearPowerPlant
         ArrayList<WeightedLatLng> weightedLatLngNuclearPowerPlant = new ArrayList<WeightedLatLng>();
