@@ -1,6 +1,7 @@
 package mse.hqevaluator;
 
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.hardware.display.DisplayManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -57,7 +58,7 @@ import mse.hqevaluator.persistence.NuclearPowerPlantTable;
 
 public class MapsActivity extends ActionBarActivity
     implements OnAllNuclearPowerPlantsReceivedListener, OnAllMotorwayRampsReceivedListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnCameraChangeListener{
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
@@ -97,21 +98,6 @@ public class MapsActivity extends ActionBarActivity
 
     }
 
-    /**
-     * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
-     * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * call {@link #setUpMap()} once when {@link #mMap} is not null.
-     * <p/>
-     * If it isn't installed {@link SupportMapFragment} (and
-     * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
-     * install/update the Google Play services APK on their device.
-     * <p/>
-     * A user can return to this FragmentActivity after following the prompt and correctly
-     * installing/updating/enabling the Google Play services. Since the FragmentActivity may not
-     * have been completely destroyed during this process (it is likely that it would only be
-     * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
-     * method in {@link #onResume()} to guarantee that it will be called.
-     */
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
@@ -122,7 +108,6 @@ public class MapsActivity extends ActionBarActivity
             if (mMap != null) {
                 setUpMap();
             }
-            mMap.setOnCameraChangeListener(this);
         }
     }
 
@@ -138,39 +123,6 @@ public class MapsActivity extends ActionBarActivity
         //placeMotorwayRamps();
         Log.i(this.getLocalClassName(), "setUpMap: Map set up.");
     }
-
-//    void placeNuclearPowerPlants() {
-//        NuclearPowerPlantTable table = dbHelper.getNuclearPowerPlantTable();
-//        List<NuclearPowerPlant> nuclearPowerPlants = table.getAll();
-//
-//        Iterator<NuclearPowerPlant> iterator = nuclearPowerPlants.iterator();
-//
-//        while(iterator.hasNext()) {
-//            NuclearPowerPlant plant = iterator.next();
-//            mMap.addMarker(
-//                    new MarkerOptions()
-//                            .position(new LatLng(plant.Latitude, plant.Longitude))
-//                            .title(plant.Name + "\nLatitude: " + plant.Latitude + "\nLongitude: " + plant.Longitude));
-//            Log.i(this.getLocalClassName(), "setUpMap: Placing marker for " + plant.Name);
-//        }
-//    }
-//
-//    void placeMotorwayRamps() {
-//        MotorwayRampTable table = dbHelper.getMotorwayRampTable();
-//        List<MotorwayRamp> motorwayRamps = table.getAll();
-//
-//        Iterator<MotorwayRamp> iterator = motorwayRamps.iterator();
-//
-//        while(iterator.hasNext()) {
-//            MotorwayRamp ramp = iterator.next();
-//            mMap.addMarker(
-//                    new MarkerOptions()
-//                            .position(new LatLng(ramp.Latitude, ramp.Longitude))
-//                            .title(ramp.Name + "\nMotorway: " + ramp.Motorway + "\nLatitude: " + ramp.Latitude + "\nLongitude: " + ramp.Longitude)
-//                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-//            Log.i(this.getLocalClassName(), "setUpMap: Placing marker for " + ramp.Name);
-//        }
-//    }
 
     @Override
     public void onConnected(Bundle connectionHint) {
@@ -195,7 +147,7 @@ public class MapsActivity extends ActionBarActivity
             //Helpers.showToast("Lat: " + location.getLatitude() + "\nLng: " + location.getLongitude(), getApplicationContext());
 
             LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
-            float zoom = 10.0f;    // valid values between 2.0 and 21.0
+            float zoom = 7.0f;    // valid values between 2.0 and 21.0
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, zoom));
         }
         else {
@@ -204,90 +156,80 @@ public class MapsActivity extends ActionBarActivity
         }
     }
 
-    private HeatmapTileProvider mProvider;
+    //private SharedPreferences.Editor editor;
+    //String slider = null;
+    //SharedPreferences prefs = getSharedPreferences(slider, MODE_PRIVATE);
 
-    private TileOverlay mOverlay;
-
-    private static final int[] colors = {
-            Color.rgb(243, 156, 18),
-            Color.rgb(192, 57, 43)
-    };
-
-    private static final float[] startPoints = {
-            0.1f, 2f
-    };
-
-    int radiusInMeterAKW = 10000;
 
     private void addHeatMap() {
-        ArrayList<WeightedLatLng> weightedLatLngakw = new ArrayList<WeightedLatLng>();
 
-        NuclearPowerPlantTable table = dbHelper.getNuclearPowerPlantTable();
-        List<NuclearPowerPlant> nuclearPowerPlants = table.getAll();
+        //Log.d(" ","AKW INT IST"+prefs.getInt("akw",0));
+
+        //*********************************************************************************NuclearPowerPlant
+        ArrayList<WeightedLatLng> weightedLatLngNuclearPowerPlant = new ArrayList<WeightedLatLng>();
+
+        NuclearPowerPlantTable nuclearPowerPlantTable = dbHelper.getNuclearPowerPlantTable();
+        List<NuclearPowerPlant> nuclearPowerPlants = nuclearPowerPlantTable.getAll();
 
         Iterator<NuclearPowerPlant> iterator = nuclearPowerPlants.iterator();
 
-        while(iterator.hasNext()) {
+       while(iterator.hasNext()) {
             NuclearPowerPlant plant = iterator.next();
-            LatLng actualLocation = new LatLng(plant.Longitude, plant.Latitude);
-            WeightedLatLng actualLocationweighted = new WeightedLatLng(actualLocation, 1);
-            weightedLatLngakw.add(actualLocationweighted);
+            Log.d("add Circle",":"+plant.Longitude+plant.Latitude);
+            addCircle(1000,new LatLng(plant.Longitude, plant.Latitude));
         }
-        //weightedLatLngakw.add(actualLocationweighted);
-        Log.d("","akwlist is "+weightedLatLngakw);
-
-
-
-        Gradient gradient = new Gradient(colors, startPoints);
-
-        // Create a heat map tile provider, passing it the latlngs of the police stations.
-        mProvider = new HeatmapTileProvider.Builder()
-                .weightedData(weightedLatLngakw)
-                .gradient(gradient)
-                .build();
-        // Add a tile overlay to the map, using the heat map tile provider.
-        mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
-
-        mProvider.setOpacity(0.7);
-
-        double meterPerPixel = MeterPerPixel();
-        mProvider.setRadius(meterToPixel(radiusInMeterAKW,meterPerPixel));
+        //*********************************************************************************MotorwayRamps
 
 
     }
 
-    @Override
-    public void onCameraChange(CameraPosition cameraPosition) {
+    public void addCircle(int radius,LatLng pos){
+        int alpha = 170;
+        for(int i=radius/5;i<=radius;i+=radius/5)
+        {
 
-        double meterPerPixel = MeterPerPixel();
-        //Log.d("Radius in ","Pixel "+metertoPixel(radiusInMeterAKW,meterPerPixel));
-        mProvider.setRadius(meterToPixel(radiusInMeterAKW,meterPerPixel));
+            CircleOptions circleOptions = new CircleOptions()
+                    .center(pos)   //set center
+                    .radius(i)   //set radius in meters
+                    .fillColor(Color.argb(alpha,192,57,43))  //default
+                    .strokeWidth(0);
 
-        Log.d("CameraChange","radius in pixel"+meterToPixel(radiusInMeterAKW,meterPerPixel));
-        mOverlay.clearTileCache();
-
-    }
-
-    public int meterToPixel(int rad, double mPerPixel){
-        int x = (int)(rad / mPerPixel);
-        if(x <=0) {
-            x = 0;
+            Circle circle= mMap.addCircle(circleOptions);
+            alpha = alpha -35;
         }
-        return x;
     }
 
-    public double MeterPerPixel(){
-        float results[] = new float[1];
-        Location.distanceBetween(
-                mMap.getProjection().getVisibleRegion().nearLeft.latitude,
-                mMap.getProjection().getVisibleRegion().nearLeft.longitude,
-                mMap.getProjection().getVisibleRegion().farRight.latitude,
-                mMap.getProjection().getVisibleRegion().farRight.longitude,
-                results); //visible distance on display
-        LinearLayout layout = (LinearLayout) this.findViewById(R.id.maps_activity);
-        double meterPerPixel = results[0] / Math.hypot(layout.getWidth(),layout.getHeight());
-        return meterPerPixel;
-    }
+//    @Override
+//    public void onCameraChange(CameraPosition cameraPosition) {
+//
+//        double meterPerPixel = MeterPerPixel();
+//        mProviderNuclearPowerPlant.setRadius(meterToPixel(radiusInMeterNuclearPowerPlant,meterPerPixel));
+//
+//        Log.d("CameraChange","radius in pixel"+meterToPixel(radiusInMeterNuclearPowerPlant,meterPerPixel));
+//        mOverlay.clearTileCache();
+//
+//    }
+//
+//    public int meterToPixel(int rad, double mPerPixel){
+//        int x = (int)(rad / mPerPixel);
+//        if(x <=0) {
+//            x = 0;
+//        }
+//        return x;
+//    }
+//
+//    public double MeterPerPixel(){
+//        float results[] = new float[1];
+//        Location.distanceBetween(
+//                mMap.getProjection().getVisibleRegion().nearLeft.latitude,
+//                mMap.getProjection().getVisibleRegion().nearLeft.longitude,
+//                mMap.getProjection().getVisibleRegion().farRight.latitude,
+//                mMap.getProjection().getVisibleRegion().farRight.longitude,
+//                results); //visible distance on display
+//        LinearLayout layout = (LinearLayout) this.findViewById(R.id.maps_activity);
+//        double meterPerPixel = results[0] / Math.hypot(layout.getWidth(),layout.getHeight());
+//        return meterPerPixel;
+//    }
 
     @Override
     public void onAllNuclearPowerPlantsReceived(AsyncTaskResult<List<NuclearPowerPlant>> result) {
