@@ -28,6 +28,4 @@
         <item>access motorway</item>
         <item>exit motorway</item>
     </string-array>
-
-    <string name="updatingData">Updating data. Please wail...</string>
 </resources>
