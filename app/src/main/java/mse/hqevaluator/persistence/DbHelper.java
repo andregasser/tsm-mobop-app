@@ -23,7 +23,7 @@ public class DbHelper {
     private static final int DATABASE_VERSION = 1;
 
     // private static final int TIMESPAN_BETWEEN_UPDATES = 604800; // this means 7 days (expressed in seconds)
-    private static final int TIMESPAN_BETWEEN_UPDATES = 300; // this means 5 minutes (expressed in seconds
+    private static final int TIMESPAN_BETWEEN_UPDATES = 60; // this means 1 minute (expressed in seconds)
 
     public DbHelper(Context context) {
         this.context = context;

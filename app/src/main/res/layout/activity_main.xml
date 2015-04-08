@@ -37,27 +37,4 @@
 
     </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/updateProgressBar"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        android:indeterminate="false"
-        android:indeterminateOnly="false"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:paddingLeft="80px"
-        android:paddingRight="80px" />
-
-    <TextView
-        android:id="@+id/updateProgressText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/updatingData"
-        android:layout_gravity="bottom|center"
-        android:textStyle="bold"
-        android:visibility="visible"
-        android:gravity="center"
-        android:paddingBottom="40px"
-        android:paddingTop="20px" />
-
 </LinearLayout>
