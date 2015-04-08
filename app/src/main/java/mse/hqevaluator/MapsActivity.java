@@ -169,47 +169,53 @@ public class MapsActivity extends ActionBarActivity
         Log.d(" ","AKW INT IST"+prefs.getInt("nuclear_power_plant",0));
 
         //*********************************************************************************NuclearPowerPlant
-        ArrayList<WeightedLatLng> weightedLatLngNuclearPowerPlant = new ArrayList<WeightedLatLng>();
-
-        NuclearPowerPlantTable nuclearPowerPlantTable = dbHelper.getNuclearPowerPlantTable();
+        NuclearPowerPlantTable nuclearPowerPlantTable = dbHelper.getNuclearPowerPlantTable();       //init db support
         List<NuclearPowerPlant> nuclearPowerPlants = nuclearPowerPlantTable.getAll();
 
         Iterator<NuclearPowerPlant> nuclearPowerPlantIterator = nuclearPowerPlants.iterator();
 
-       while(nuclearPowerPlantIterator.hasNext()) {
+       while(nuclearPowerPlantIterator.hasNext()) {     //iterate to all nuclearPowerplants
             NuclearPowerPlant plant = nuclearPowerPlantIterator.next();
             Log.d("add Circle",":"+plant.Longitude+plant.Latitude);
-            addCircle(prefs.getInt("nuclear_power_plant",0)*1000,new LatLng(plant.Longitude, plant.Latitude));
-        }
+            if(prefs.getInt("spinner_nearfar1",0)==1){  //get dropdown value menu from settings
+                addCircle(prefs.getInt("nuclear_power_plant",0)*1000,new LatLng(plant.Latitude, plant.Longitude),192,57,43);    //add red heatspot
+            }
+            else{
+                addCircle(prefs.getInt("nuclear_power_plant",0)*1000,new LatLng(plant.Latitude, plant.Longitude),46,204,113);   //add green heatspot
+            }
+            }
         //*********************************************************************************MotorwayRamps
-        ArrayList<WeightedLatLng> weightedLatLngMotorwayRamps = new ArrayList<WeightedLatLng>();
-
-        MotorwayRampTable motorwayRampsTable = dbHelper.getMotorwayRampTable();
+        MotorwayRampTable motorwayRampsTable = dbHelper.getMotorwayRampTable();         //init db support
         List<MotorwayRamp> motorwayRampsPlants = motorwayRampsTable.getAll();
 
         Iterator<MotorwayRamp> motorwayRampsIterator = motorwayRampsPlants.iterator();
 
-        while(motorwayRampsIterator.hasNext()) {
+        while(motorwayRampsIterator.hasNext()) {        //iterate to all motorwayramps
             MotorwayRamp plant = motorwayRampsIterator.next();
             Log.d("add Circle",":"+plant.Longitude+plant.Latitude);
-            addCircle(prefs.getInt("motorway_ramp",0)*1000,new LatLng(plant.Longitude, plant.Latitude));
+            if(prefs.getInt("spinner_nearfar2",0)==1){  //get dropdown value menu from settings
+                addCircle(prefs.getInt("motorway_ramp",0)*1000,new LatLng(plant.Latitude, plant.Longitude),192,57,43);      //add red heatspot
+            }
+            else{
+                addCircle(prefs.getInt("motorway_ramp",0)*1000,new LatLng(plant.Latitude, plant.Longitude),46,204,113);     //add green heatspot
+            }
         }
 
     }
 
-    public void addCircle(int radius,LatLng pos){
+    public void addCircle(int radius,LatLng pos,int r,int g, int b){        //add Heatspot
         int alpha = 170;
-        for(int i=radius/5;i<=radius;i+=radius/5)
+        for(int i=radius/5;i<=radius;i+=radius/5)   //draw 5 circles per heatspot
         {
 
             CircleOptions circleOptions = new CircleOptions()
                     .center(pos)   //set center
                     .radius(i)   //set radius in meters
-                    .fillColor(Color.argb(alpha,192,57,43))  //default
+                    .fillColor(Color.argb(alpha,r,g,b))  //default
                     .strokeWidth(0);
 
             Circle circle= mMap.addCircle(circleOptions);
-            alpha = alpha -35;
+            alpha = alpha -35; //reduce the alpha in outer circles
         }
     }
 
