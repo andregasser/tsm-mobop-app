@@ -48,8 +48,9 @@ public class SettingsActivity extends ActionBarActivity {
         seekBar_1.setMax(100);
         seekBar_2.setMax(30);
 
-        //spinner_1 = (Spinner) findViewById(R.id.spinner_1);
-        spinner_3 = (Spinner) findViewById(R.id.spinner_2);
+        spinner_1 = (Spinner) findViewById(R.id.spinner_1);
+        spinner_2 = (Spinner) findViewById(R.id.spinner_2);
+        spinner_3 = (Spinner) findViewById(R.id.spinner_3);
 
 
         String seekbar_prefs = null;
@@ -69,6 +70,16 @@ public class SettingsActivity extends ActionBarActivity {
 
         if(!prefs.contains("spinner_select")){
             editor.putInt("spinner_select",0);
+            editor.commit();
+        }
+
+        if(!prefs.contains("spinner_nearfar1")){
+            editor.putInt("spinner_nearfar1",0);
+            editor.commit();
+        }
+
+        if(!prefs.contains("spinner_nearfar2")){
+            editor.putInt("spinner_nearfar2",0);
             editor.commit();
         }
 
@@ -130,6 +141,44 @@ public class SettingsActivity extends ActionBarActivity {
             }
         });
 
+        spinner_1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            /**
+             * Called when a new item is selected (in the Spinner)
+             */
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                // An spinnerItem was selected. You can retrieve the selected item using
+                String str = parent.getItemAtPosition(pos).toString();
+                editor.putInt("spinner_nearfar1", pos);
+                editor.commit();
+                //  Toast.makeText(getApplicationContext(), "Item Selected: "+str,Toast.LENGTH_SHORT).show();
+            }
+
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing, just another required interface callback
+            }
+
+        });
+
+        spinner_2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            /**
+             * Called when a new item is selected (in the Spinner)
+             */
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                // An spinnerItem was selected. You can retrieve the selected item using
+                String str = parent.getItemAtPosition(pos).toString();
+
+                editor.putInt("spinner_nearfar2", pos);
+                editor.commit();
+                //  Toast.makeText(getApplicationContext(), "Item Selected: "+str,Toast.LENGTH_SHORT).show();
+            }
+
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing, just another required interface callback
+            }
+
+        });
+
+
         spinner_3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             /**
              * Called when a new item is selected (in the Spinner)
@@ -137,6 +186,7 @@ public class SettingsActivity extends ActionBarActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 // An spinnerItem was selected. You can retrieve the selected item using
                 String str = parent.getItemAtPosition(pos).toString();
+        
                 editor.putString("spinner_select", str);
                 editor.commit();
                 //  Toast.makeText(getApplicationContext(), "Item Selected: "+str,Toast.LENGTH_SHORT).show();
@@ -146,7 +196,7 @@ public class SettingsActivity extends ActionBarActivity {
                 // Do nothing, just another required interface callback
             }
 
-        }); // (optional)
+        });
 
     }
 
