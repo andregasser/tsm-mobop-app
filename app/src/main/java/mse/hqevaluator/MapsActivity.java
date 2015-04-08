@@ -192,7 +192,7 @@ public class MapsActivity extends ActionBarActivity
     private void setlocationtocurent() {
         if (location != null) {
             // Display toast for debugging purposes
-            Helpers.showToast("Lat: " + location.getLatitude() + "\nLng: " + location.getLongitude(), getApplicationContext());
+            //Helpers.showToast("Lat: " + location.getLatitude() + "\nLng: " + location.getLongitude(), getApplicationContext());
 
             LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
             float zoom = 10.0f;    // valid values between 2.0 and 21.0
@@ -208,10 +208,6 @@ public class MapsActivity extends ActionBarActivity
 
     private TileOverlay mOverlay;
 
-    private LatLng actualLocation = new LatLng(47.159325, 7.342790);
-
-    private WeightedLatLng actualLocationweighted = new WeightedLatLng(actualLocation, 1);
-
     private static final int[] colors = {
             Color.rgb(243, 156, 18),
             Color.rgb(192, 57, 43)
@@ -221,14 +217,10 @@ public class MapsActivity extends ActionBarActivity
             0.1f, 2f
     };
 
+    int radiusInMeterAKW = 10000;
 
     private void addHeatMap() {
         ArrayList<WeightedLatLng> weightedLatLngakw = new ArrayList<WeightedLatLng>();
-        //weightedLatLngakw.add(actualLocationweighted);
-
-
-        //LatLng nlocationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-        //WeightedLatLng locationLatLng = new WeightedLatLng(nlocationLatLng,1);
 
         NuclearPowerPlantTable table = dbHelper.getNuclearPowerPlantTable();
         List<NuclearPowerPlant> nuclearPowerPlants = table.getAll();
@@ -237,16 +229,8 @@ public class MapsActivity extends ActionBarActivity
 
         while(iterator.hasNext()) {
             NuclearPowerPlant plant = iterator.next();
-            //mMap.addMarker(
-            //        new MarkerOptions()
-            //                .position(new LatLng(plant.Latitude, plant.Longitude))
-            //                .title(plant.Name + "\nLatitude: " + plant.Latitude + "\nLongitude: " + plant.Longitude));
-            //Log.i(this.getLocalClassName(), "setUpMap: Placing marker for " + plant.Name+plant.Latitude+plant.Longitude);
-
-            actualLocation = null;
-            actualLocationweighted = null;
-            actualLocation = new LatLng(plant.Longitude, plant.Latitude);
-            actualLocationweighted = new WeightedLatLng(actualLocation, 1);
+            LatLng actualLocation = new LatLng(plant.Longitude, plant.Latitude);
+            WeightedLatLng actualLocationweighted = new WeightedLatLng(actualLocation, 1);
             weightedLatLngakw.add(actualLocationweighted);
         }
         //weightedLatLngakw.add(actualLocationweighted);
@@ -265,45 +249,44 @@ public class MapsActivity extends ActionBarActivity
         mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
 
         mProvider.setOpacity(0.7);
-        mProvider.setRadius(100);
+
+        double meterPerPixel = MeterPerPixel();
+        mProvider.setRadius(meterToPixel(radiusInMeterAKW,meterPerPixel));
+
 
     }
 
-    private float previousZoomLevel = -1.0f;
-    private boolean isZooming = false;
-
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
-//
-//        float results[] = new float[1];
-//        Location.distanceBetween(
-//                mMap.getProjection().getVisibleRegion().nearLeft.latitude,
-//                mMap.getProjection().getVisibleRegion().nearLeft.longitude,
-//                mMap.getProjection().getVisibleRegion().farRight.latitude,
-//                mMap.getProjection().getVisibleRegion().farRight.longitude,
-//                results); //visible distance on display
-//
-//        //Log.d("Distance","ist"+distance);
-//        //Log.d("Distance0","ist"+results[0]);
-//
-//        LinearLayout layout = (LinearLayout) this.findViewById(R.id.maps_activity);
-//        double meterPerPixel = results[0] / Math.hypot(layout.getWidth(),layout.getHeight());
-//
-//        //float pixelPerMeter = layout.getWidth() / results[0];
-//
-//        //Log.d("meterPerPixel","ist"+meterPerPixel);
-//
-//
-//        int radius = 100;
-//        int actualRadius = (int)(radius / meterPerPixel);
-//
-//        //Log.d("Radius","ist"+actualRadius);
-//
-//        mProvider.setRadius(actualRadius);
-//
-//        //mProvider.setRadius();
-//
 
+        double meterPerPixel = MeterPerPixel();
+        //Log.d("Radius in ","Pixel "+metertoPixel(radiusInMeterAKW,meterPerPixel));
+        mProvider.setRadius(meterToPixel(radiusInMeterAKW,meterPerPixel));
+
+        Log.d("CameraChange","radius in pixel"+meterToPixel(radiusInMeterAKW,meterPerPixel));
+        mOverlay.clearTileCache();
+
+    }
+
+    public int meterToPixel(int rad, double mPerPixel){
+        int x = (int)(rad / mPerPixel);
+        if(x <=0) {
+            x = 0;
+        }
+        return x;
+    }
+
+    public double MeterPerPixel(){
+        float results[] = new float[1];
+        Location.distanceBetween(
+                mMap.getProjection().getVisibleRegion().nearLeft.latitude,
+                mMap.getProjection().getVisibleRegion().nearLeft.longitude,
+                mMap.getProjection().getVisibleRegion().farRight.latitude,
+                mMap.getProjection().getVisibleRegion().farRight.longitude,
+                results); //visible distance on display
+        LinearLayout layout = (LinearLayout) this.findViewById(R.id.maps_activity);
+        double meterPerPixel = results[0] / Math.hypot(layout.getWidth(),layout.getHeight());
+        return meterPerPixel;
     }
 
     @Override
