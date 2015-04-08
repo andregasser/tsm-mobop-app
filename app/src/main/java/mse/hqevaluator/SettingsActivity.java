@@ -25,6 +25,7 @@ public class SettingsActivity extends ActionBarActivity {
 
     private Spinner spinner_1;
     private Spinner spinner_2;
+    private Spinner spinner_3;
 
     private TextView textView_1;
     private TextView textView_5;
@@ -48,7 +49,7 @@ public class SettingsActivity extends ActionBarActivity {
         seekBar_2.setMax(30);
 
         //spinner_1 = (Spinner) findViewById(R.id.spinner_1);
-        spinner_2 = (Spinner) findViewById(R.id.spinner_2);
+        spinner_3 = (Spinner) findViewById(R.id.spinner_2);
 
 
         String seekbar_prefs = null;
@@ -76,7 +77,7 @@ public class SettingsActivity extends ActionBarActivity {
         textView_1.append(String.valueOf(oldVal)+"km");
         oldVal = prefs.getInt("motorway_ramp",0);
         seekBar_2.setProgress(oldVal);
-        textView_5.append(String.valueOf(oldVal)+"km");
+        textView_5.append(String.valueOf(oldVal) + "km");
 
         seekBar_1.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
             int progress = 0;
@@ -86,7 +87,7 @@ public class SettingsActivity extends ActionBarActivity {
                 progress = progresValue;
                 textView_1.setTextColor(Color.GRAY);
                 textView_1.setText("");
-                textView_1.append(String.valueOf(progresValue)+"km");
+                textView_1.append(String.valueOf(progresValue) + "km");
                 progress = (progress / 5) * 5;
                 seekBar_1.setProgress(progress);
 
@@ -129,16 +130,16 @@ public class SettingsActivity extends ActionBarActivity {
             }
         });
 
-        spinner_2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinner_3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             /**
              * Called when a new item is selected (in the Spinner)
              */
-            public void onItemSelected(AdapterView<?> parent, View view,int pos, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 // An spinnerItem was selected. You can retrieve the selected item using
                 String str = parent.getItemAtPosition(pos).toString();
-                editor.putString("spinner_select",str);
+                editor.putString("spinner_select", str);
                 editor.commit();
-              //  Toast.makeText(getApplicationContext(), "Item Selected: "+str,Toast.LENGTH_SHORT).show();
+                //  Toast.makeText(getApplicationContext(), "Item Selected: "+str,Toast.LENGTH_SHORT).show();
             }
 
             public void onNothingSelected(AdapterView<?> parent) {

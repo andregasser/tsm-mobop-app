@@ -19,12 +19,16 @@
 
 
     <string-array name="spinner1_arrays">
-        <item>item_1</item>
-        <item>item_2</item>
-        <item>item_3</item>
+        <item>near</item>
+        <item>far</item>
     </string-array>
 
     <string-array name="spinner2_arrays">
+        <item>near</item>
+        <item>far</item>
+    </string-array>
+
+    <string-array name="spinner3_arrays">
         <item>access motorway</item>
         <item>exit motorway</item>
     </string-array>
