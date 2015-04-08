@@ -68,6 +68,8 @@ public class MapsActivity extends ActionBarActivity
 
     private DbHelper dbHelper = null;
 
+    private SharedPreferences prefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +77,10 @@ public class MapsActivity extends ActionBarActivity
         dbHelper = new DbHelper(this);
         setUpMapIfNeeded();
         buildGoogleApiClient();
+
+        SharedPreferences.Editor editor;
+        String slider = null;
+        prefs = getSharedPreferences(slider, MODE_PRIVATE);
     }
 
     @Override
@@ -124,17 +130,12 @@ public class MapsActivity extends ActionBarActivity
         Log.i(this.getLocalClassName(), "setUpMap: Map set up.");
     }
 
-    private SharedPreferences prefs;
+
 
     @Override
     public void onConnected(Bundle connectionHint) {
         location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
         setlocationtocurent();
-
-        SharedPreferences.Editor editor;
-        String slider = null;
-        prefs = getSharedPreferences(slider, MODE_PRIVATE);
-
         addHeatMap();
 
     }
@@ -182,7 +183,7 @@ public class MapsActivity extends ActionBarActivity
        while(iterator.hasNext()) {
             NuclearPowerPlant plant = iterator.next();
             Log.d("add Circle",":"+plant.Longitude+plant.Latitude);
-            addCircle(1000,new LatLng(plant.Longitude, plant.Latitude));
+            addCircle(10000,new LatLng(plant.Longitude, plant.Latitude));
         }
         //*********************************************************************************MotorwayRamps
 
