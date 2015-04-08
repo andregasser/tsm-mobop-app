@@ -79,9 +79,7 @@ public class MapsActivity extends ActionBarActivity
         setUpMapIfNeeded();
         buildGoogleApiClient();
 
-        SharedPreferences.Editor editor;
-        String slider = null;
-        prefs = getSharedPreferences(slider, MODE_PRIVATE);
+
     }
 
     @Override
@@ -131,8 +129,6 @@ public class MapsActivity extends ActionBarActivity
         Log.i(this.getLocalClassName(), "setUpMap: Map set up.");
     }
 
-
-
     @Override
     public void onConnected(Bundle connectionHint) {
         location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
@@ -168,6 +164,8 @@ public class MapsActivity extends ActionBarActivity
 
     private void addHeatMap() {
 
+        prefs = getSharedPreferences(null, MODE_PRIVATE);
+
         Log.d(" ","AKW INT IST"+prefs.getInt("nuclear_power_plant",0));
 
         //*********************************************************************************NuclearPowerPlant
@@ -181,7 +179,7 @@ public class MapsActivity extends ActionBarActivity
        while(nuclearPowerPlantIterator.hasNext()) {
             NuclearPowerPlant plant = nuclearPowerPlantIterator.next();
             Log.d("add Circle",":"+plant.Longitude+plant.Latitude);
-            addCircle(25000,new LatLng(plant.Longitude, plant.Latitude));
+            addCircle(prefs.getInt("nuclear_power_plant",0)*1000,new LatLng(plant.Longitude, plant.Latitude));
         }
         //*********************************************************************************MotorwayRamps
         ArrayList<WeightedLatLng> weightedLatLngMotorwayRamps = new ArrayList<WeightedLatLng>();
@@ -194,7 +192,7 @@ public class MapsActivity extends ActionBarActivity
         while(motorwayRampsIterator.hasNext()) {
             MotorwayRamp plant = motorwayRampsIterator.next();
             Log.d("add Circle",":"+plant.Longitude+plant.Latitude);
-            addCircle(5000,new LatLng(plant.Longitude, plant.Latitude));
+            addCircle(prefs.getInt("motorway_ramp",0)*1000,new LatLng(plant.Longitude, plant.Latitude));
         }
 
     }
