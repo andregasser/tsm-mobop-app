@@ -124,11 +124,19 @@ public class MapsActivity extends ActionBarActivity
         Log.i(this.getLocalClassName(), "setUpMap: Map set up.");
     }
 
+    private SharedPreferences prefs;
+
     @Override
     public void onConnected(Bundle connectionHint) {
         location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
         setlocationtocurent();
+
+        SharedPreferences.Editor editor;
+        String slider = null;
+        prefs = getSharedPreferences(slider, MODE_PRIVATE);
+
         addHeatMap();
+
     }
 
     @Override
@@ -156,14 +164,12 @@ public class MapsActivity extends ActionBarActivity
         }
     }
 
-    //private SharedPreferences.Editor editor;
-    //String slider = null;
-    //SharedPreferences prefs = getSharedPreferences(slider, MODE_PRIVATE);
+
 
 
     private void addHeatMap() {
 
-        //Log.d(" ","AKW INT IST"+prefs.getInt("akw",0));
+        Log.d(" ","AKW INT IST"+prefs.getInt("akw",0));
 
         //*********************************************************************************NuclearPowerPlant
         ArrayList<WeightedLatLng> weightedLatLngNuclearPowerPlant = new ArrayList<WeightedLatLng>();
