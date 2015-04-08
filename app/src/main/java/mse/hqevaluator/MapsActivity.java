@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.android.gms.maps.model.TileProvider;
 import com.google.maps.android.MarkerManager;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.google.android.gms.maps.model.TileOverlay;
@@ -165,9 +166,6 @@ public class MapsActivity extends ActionBarActivity
         }
     }
 
-
-
-
     private void addHeatMap() {
 
         Log.d(" ","AKW INT IST"+prefs.getInt("akw",0));
@@ -178,15 +176,26 @@ public class MapsActivity extends ActionBarActivity
         NuclearPowerPlantTable nuclearPowerPlantTable = dbHelper.getNuclearPowerPlantTable();
         List<NuclearPowerPlant> nuclearPowerPlants = nuclearPowerPlantTable.getAll();
 
-        Iterator<NuclearPowerPlant> iterator = nuclearPowerPlants.iterator();
+        Iterator<NuclearPowerPlant> nuclearPowerPlantIterator = nuclearPowerPlants.iterator();
 
-       while(iterator.hasNext()) {
-            NuclearPowerPlant plant = iterator.next();
+       while(nuclearPowerPlantIterator.hasNext()) {
+            NuclearPowerPlant plant = nuclearPowerPlantIterator.next();
             Log.d("add Circle",":"+plant.Longitude+plant.Latitude);
-            addCircle(10000,new LatLng(plant.Longitude, plant.Latitude));
+            addCircle(25000,new LatLng(plant.Longitude, plant.Latitude));
         }
         //*********************************************************************************MotorwayRamps
+        ArrayList<WeightedLatLng> weightedLatLngMotorwayRamps = new ArrayList<WeightedLatLng>();
 
+        MotorwayRampTable motorwayRampsTable = dbHelper.getMotorwayRampTable();
+        List<MotorwayRamp> motorwayRampsPlants = motorwayRampsTable.getAll();
+
+        Iterator<MotorwayRamp> motorwayRampsIterator = motorwayRampsPlants.iterator();
+
+        while(motorwayRampsIterator.hasNext()) {
+            MotorwayRamp plant = motorwayRampsIterator.next();
+            Log.d("add Circle",":"+plant.Longitude+plant.Latitude);
+            addCircle(5000,new LatLng(plant.Longitude, plant.Latitude));
+        }
 
     }
 
@@ -205,38 +214,6 @@ public class MapsActivity extends ActionBarActivity
             alpha = alpha -35;
         }
     }
-
-//    @Override
-//    public void onCameraChange(CameraPosition cameraPosition) {
-//
-//        double meterPerPixel = MeterPerPixel();
-//        mProviderNuclearPowerPlant.setRadius(meterToPixel(radiusInMeterNuclearPowerPlant,meterPerPixel));
-//
-//        Log.d("CameraChange","radius in pixel"+meterToPixel(radiusInMeterNuclearPowerPlant,meterPerPixel));
-//        mOverlay.clearTileCache();
-//
-//    }
-//
-//    public int meterToPixel(int rad, double mPerPixel){
-//        int x = (int)(rad / mPerPixel);
-//        if(x <=0) {
-//            x = 0;
-//        }
-//        return x;
-//    }
-//
-//    public double MeterPerPixel(){
-//        float results[] = new float[1];
-//        Location.distanceBetween(
-//                mMap.getProjection().getVisibleRegion().nearLeft.latitude,
-//                mMap.getProjection().getVisibleRegion().nearLeft.longitude,
-//                mMap.getProjection().getVisibleRegion().farRight.latitude,
-//                mMap.getProjection().getVisibleRegion().farRight.longitude,
-//                results); //visible distance on display
-//        LinearLayout layout = (LinearLayout) this.findViewById(R.id.maps_activity);
-//        double meterPerPixel = results[0] / Math.hypot(layout.getWidth(),layout.getHeight());
-//        return meterPerPixel;
-//    }
 
     @Override
     public void onAllNuclearPowerPlantsReceived(AsyncTaskResult<List<NuclearPowerPlant>> result) {
