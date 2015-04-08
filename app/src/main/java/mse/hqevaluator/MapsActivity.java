@@ -192,7 +192,7 @@ public class MapsActivity extends ActionBarActivity
 
     public void addCircle(int radius,LatLng pos){
         int alpha = 170;
-        for(int i=radius/5;i<=radius;i+=radius/5)
+        for(int i=(int)radius/5;i<=radius;i+=(int)radius/5)
         {
 
             CircleOptions circleOptions = new CircleOptions()
