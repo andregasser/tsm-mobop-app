@@ -1,5 +1,6 @@
 package mse.hqevaluator;
 
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -11,9 +12,10 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import android.graphics.Color;
 
 import java.util.Iterator;
 import java.util.List;
@@ -25,7 +27,7 @@ import mse.hqevaluator.persistence.MotorwayRampTable;
 import mse.hqevaluator.persistence.NuclearPowerPlantTable;
 
 public class MapsActivity extends ActionBarActivity
-    implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+    implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
@@ -35,6 +37,8 @@ public class MapsActivity extends ActionBarActivity
 
     private DbHelper dbHelper = null;
 
+    private SharedPreferences prefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +46,8 @@ public class MapsActivity extends ActionBarActivity
         dbHelper = new DbHelper(this);
         setUpMapIfNeeded();
         buildGoogleApiClient();
+
+
     }
 
     @Override
@@ -65,21 +71,6 @@ public class MapsActivity extends ActionBarActivity
 
     }
 
-    /**
-     * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
-     * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * call {@link #setUpMap()} once when {@link #mMap} is not null.
-     * <p/>
-     * If it isn't installed {@link SupportMapFragment} (and
-     * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
-     * install/update the Google Play services APK on their device.
-     * <p/>
-     * A user can return to this FragmentActivity after following the prompt and correctly
-     * installing/updating/enabling the Google Play services. Since the FragmentActivity may not
-     * have been completely destroyed during this process (it is likely that it would only be
-     * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
-     * method in {@link #onResume()} to guarantee that it will be called.
-     */
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
@@ -101,48 +92,17 @@ public class MapsActivity extends ActionBarActivity
      */
     private void setUpMap() {
         Log.i(this.getLocalClassName(), "setUpMap: Setting up map.");
-        placeNuclearPowerPlants();
-        placeMotorwayRamps();
+        //placeNuclearPowerPlants();
+        //placeMotorwayRamps();
         Log.i(this.getLocalClassName(), "setUpMap: Map set up.");
-    }
-
-    void placeNuclearPowerPlants() {
-        NuclearPowerPlantTable table = dbHelper.getNuclearPowerPlantTable();
-        List<NuclearPowerPlant> nuclearPowerPlants = table.getAll();
-
-        Iterator<NuclearPowerPlant> iterator = nuclearPowerPlants.iterator();
-
-        while(iterator.hasNext()) {
-            NuclearPowerPlant plant = iterator.next();
-            mMap.addMarker(
-                    new MarkerOptions()
-                            .position(new LatLng(plant.Latitude, plant.Longitude))
-                            .title(plant.Name + "\nLatitude: " + plant.Latitude + "\nLongitude: " + plant.Longitude));
-            Log.i(this.getLocalClassName(), "setUpMap: Placing marker for " + plant.Name);
-        }
-    }
-
-    void placeMotorwayRamps() {
-        MotorwayRampTable table = dbHelper.getMotorwayRampTable();
-        List<MotorwayRamp> motorwayRamps = table.getAll();
-
-        Iterator<MotorwayRamp> iterator = motorwayRamps.iterator();
-
-        while(iterator.hasNext()) {
-            MotorwayRamp ramp = iterator.next();
-            mMap.addMarker(
-                    new MarkerOptions()
-                            .position(new LatLng(ramp.Latitude, ramp.Longitude))
-                            .title(ramp.Name + "\nMotorway: " + ramp.Motorway + "\nLatitude: " + ramp.Latitude + "\nLongitude: " + ramp.Longitude)
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-            Log.i(this.getLocalClassName(), "setUpMap: Placing marker for " + ramp.Name);
-        }
     }
 
     @Override
     public void onConnected(Bundle connectionHint) {
         location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
         setlocationtocurent();
+        addHeatMap();
+
     }
 
     @Override
@@ -158,15 +118,72 @@ public class MapsActivity extends ActionBarActivity
     private void setlocationtocurent() {
         if (location != null) {
             // Display toast for debugging purposes
-            Helpers.showToast("Lat: " + location.getLatitude() + "\nLng: " + location.getLongitude(), getApplicationContext());
+            //Helpers.showToast("Lat: " + location.getLatitude() + "\nLng: " + location.getLongitude(), getApplicationContext());
 
             LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
-            float zoom = 8.0f;    // valid values between 2.0 and 21.0
+            float zoom = 7.0f;    // valid values between 2.0 and 21.0
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, zoom));
         }
         else {
             // Display toast for debugging purposes
             Helpers.showToast("Location was empty", getApplicationContext());
+        }
+    }
+
+    private void addHeatMap() {
+
+        prefs = getSharedPreferences(null, MODE_PRIVATE);
+
+        Log.d(" ","AKW INT IST"+prefs.getInt("nuclear_power_plant",0));
+
+        //*********************************************************************************NuclearPowerPlant
+        NuclearPowerPlantTable nuclearPowerPlantTable = dbHelper.getNuclearPowerPlantTable();       //init db support
+        List<NuclearPowerPlant> nuclearPowerPlants = nuclearPowerPlantTable.getAll();
+
+        Iterator<NuclearPowerPlant> nuclearPowerPlantIterator = nuclearPowerPlants.iterator();
+
+       while(nuclearPowerPlantIterator.hasNext()) {     //iterate to all nuclearPowerplants
+            NuclearPowerPlant plant = nuclearPowerPlantIterator.next();
+            Log.d("add Circle",":"+plant.Longitude+plant.Latitude);
+            if(prefs.getInt("spinner_nearfar1",0)==1){  //get dropdown value menu from settings
+                addCircle(prefs.getInt("nuclear_power_plant",0)*1000,new LatLng(plant.Latitude, plant.Longitude),192,57,43);    //add red heatspot
+            }
+            else{
+                addCircle(prefs.getInt("nuclear_power_plant",0)*1000,new LatLng(plant.Latitude, plant.Longitude),46,204,113);   //add green heatspot
+            }
+            }
+        //*********************************************************************************MotorwayRamps
+        MotorwayRampTable motorwayRampsTable = dbHelper.getMotorwayRampTable();         //init db support
+        List<MotorwayRamp> motorwayRampsPlants = motorwayRampsTable.getAll();
+
+        Iterator<MotorwayRamp> motorwayRampsIterator = motorwayRampsPlants.iterator();
+
+        while(motorwayRampsIterator.hasNext()) {        //iterate to all motorwayramps
+            MotorwayRamp plant = motorwayRampsIterator.next();
+            Log.d("add Circle",":"+plant.Longitude+plant.Latitude);
+            if(prefs.getInt("spinner_nearfar2",0)==1){  //get dropdown value menu from settings
+                addCircle(prefs.getInt("motorway_ramp",0)*1000,new LatLng(plant.Latitude, plant.Longitude),192,57,43);      //add red heatspot
+            }
+            else{
+                addCircle(prefs.getInt("motorway_ramp",0)*1000,new LatLng(plant.Latitude, plant.Longitude),46,204,113);     //add green heatspot
+            }
+        }
+
+    }
+
+    public void addCircle(int radius,LatLng pos,int r,int g, int b){        //add Heatspot
+        int alpha = 170;
+        for(int i=radius/5;i<=radius;i+=radius/5)   //draw 5 circles per heatspot
+        {
+
+            CircleOptions circleOptions = new CircleOptions()
+                    .center(pos)   //set center
+                    .radius(i)   //set radius in meters
+                    .fillColor(Color.argb(alpha,r,g,b))  //default
+                    .strokeWidth(0);
+
+            Circle circle= mMap.addCircle(circleOptions);
+            alpha = alpha -35; //reduce the alpha in outer circles
         }
     }
 }
