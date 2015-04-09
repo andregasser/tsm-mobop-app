@@ -237,7 +237,7 @@ class CustomSeekBar extends SeekBar {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    public void onDraw(Canvas canvas) {
 
         super.onDraw(canvas);
         SeekBar sb = this;
