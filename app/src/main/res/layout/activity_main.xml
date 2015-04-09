@@ -17,24 +17,21 @@
             android:layout_width="match_parent"
             android:text="@string/activity_main_button_show_map"
             android:drawableLeft="@mipmap/maps"
-            android:onClick="openMapsActivity"
-            style="@android:style/Widget.Holo.Button" />
+            android:onClick="openMapsActivity"/>
 
         <Button
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:text="@string/activity_main_button_settings"
             android:drawableLeft="@mipmap/settings"
-            android:onClick="openSettingsActivity"
-            style="@android:style/Widget.Holo.Button" />
+            android:onClick="openSettingsActivity"/>
 
         <Button
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:text="@string/activity_main_button_about"
             android:drawableLeft="@mipmap/info"
-            android:onClick="openAboutActivity"
-            style="@android:style/Widget.Holo.Button" />
+            android:onClick="openAboutActivity"/>
 
     </LinearLayout>
 
