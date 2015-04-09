@@ -54,6 +54,12 @@ public class MainActivity extends ActionBarActivity
         startActivity(intent);
     }
 
+    public void openAboutActivity(View view)
+    {
+        Intent intent = new Intent(this, AboutActivity.class);
+        startActivity(intent);
+    }
+
     public void updateData() {
         try {
             boolean mustUpdateNuclearPowerPlants = dbHelper.mustUpdateNuclearPowerPlants();

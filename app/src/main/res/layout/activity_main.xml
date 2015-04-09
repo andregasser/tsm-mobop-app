@@ -33,6 +33,7 @@
             android:layout_width="match_parent"
             android:text="@string/activity_main_button_about"
             android:drawableLeft="@mipmap/info"
+            android:onClick="openAboutActivity"
             style="@android:style/Widget.Holo.Button" />
 
     </LinearLayout>
