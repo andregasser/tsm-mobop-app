@@ -167,7 +167,7 @@ public class MapsActivity extends ActionBarActivity
 
         while(motorwayRampsIterator.hasNext()) {
             MotorwayRamp plant = motorwayRampsIterator.next();
-            Log.d("add Circle", ":" + plant.Longitude + plant.Latitude);
+            //Log.d("add Circle", ":" + plant.Longitude + plant.Latitude);
 
             //get dropdown value menu from settings
             if(prefs.getInt("spinner_nearfar2" ,0) == 1){
