@@ -48,6 +48,7 @@ public class SettingsActivity extends ActionBarActivity {
         seekBar_1.setMax(100);
         seekBar_2.setMax(30);
 
+
         spinner_1 = (Spinner) findViewById(R.id.spinner_1);
         spinner_2 = (Spinner) findViewById(R.id.spinner_2);
         spinner_3 = (Spinner) findViewById(R.id.spinner_3);
@@ -59,12 +60,12 @@ public class SettingsActivity extends ActionBarActivity {
         SharedPreferences prefs = getSharedPreferences(seekbar_prefs, MODE_PRIVATE);
 
         if(!prefs.contains("nuclear_power_plant")){
-            editor.putInt("nuclear_power_plant",0);
+            editor.putInt("nuclear_power_plant",25);
             editor.commit();
         }
 
         if(!prefs.contains("motorway_ramp")){
-            editor.putInt("motorway_ramp",0);
+            editor.putInt("motorway_ramp",4);
             editor.commit();
         }
 
@@ -79,13 +80,14 @@ public class SettingsActivity extends ActionBarActivity {
         }
 
         if(!prefs.contains("spinner_nearfar2")){
-            editor.putInt("spinner_nearfar2",0);
+            editor.putInt("spinner_nearfar2",1);
             editor.commit();
         }
 
         int oldVal = prefs.getInt("nuclear_power_plant",0);
         seekBar_1.setProgress(oldVal);
         textView_1.append(String.valueOf(oldVal)+"km");
+
         oldVal = prefs.getInt("motorway_ramp",0);
         seekBar_2.setProgress(oldVal);
         textView_5.append(String.valueOf(oldVal) + "km");
