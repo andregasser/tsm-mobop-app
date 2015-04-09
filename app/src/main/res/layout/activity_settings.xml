@@ -61,7 +61,8 @@
             android:text="@string/activity_settings_tV_seekBar1_3"
             android:layout_gravity="center"
             android:id="@+id/tV_seekBar1_3"
-            android:gravity="center_horizontal" />
+            android:gravity="center_horizontal"
+            android:textColor="#ffffffff" />
 
         <TextView
             android:layout_width="50dip"
@@ -88,6 +89,7 @@
         <Spinner
             android:layout_width="50dip"
             android:layout_height="35dip"
+            android:textColor="#ffffffff"
             android:layout_weight="2.6"
             android:id="@+id/spinner_2"
             android:entries="@array/spinner3_arrays"
@@ -134,6 +136,7 @@
             android:layout_width="50dip"
             android:layout_height="25dip"
             android:layout_weight="1"
+            android:textColor="#ffffffff"
             android:text="@string/activity_settings_tV_seekBar2_3"
             android:layout_gravity="center"
             android:id="@+id/tV_seekBar2_3"

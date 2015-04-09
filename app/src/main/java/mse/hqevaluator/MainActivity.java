@@ -2,6 +2,7 @@ package mse.hqevaluator;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,12 +29,15 @@ public class MainActivity extends ActionBarActivity
     implements RestTask.ResponseCallback {
 
     private DbHelper dbHelper = null;
+    private SharedPreferences.Editor editor;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         dbHelper = new DbHelper(this);
+        initPrefs();
     }
 
     @Override
@@ -171,5 +175,31 @@ public class MainActivity extends ActionBarActivity
         }
 
         return list;
+    }
+
+    private void initPrefs(){
+        editor = getSharedPreferences(null, MODE_PRIVATE).edit();
+        prefs = getSharedPreferences(null, MODE_PRIVATE);
+
+        if(!prefs.contains("nuclear_power_plant")){
+            editor.putInt("nuclear_power_plant",25);
+            editor.commit();
+        }
+        if(!prefs.contains("motorway_ramp")){
+            editor.putInt("motorway_ramp",4);
+            editor.commit();
+        }
+        if(!prefs.contains("spinner_select")){
+            editor.putInt("spinner_select",0);
+            editor.commit();
+        }
+        if(!prefs.contains("spinner_nearfar1")){
+            editor.putInt("spinner_nearfar1",0);
+            editor.commit();
+        }
+        if(!prefs.contains("spinner_nearfar2")){
+            editor.putInt("spinner_nearfar2",1);
+            editor.commit();
+        }
     }
 }
